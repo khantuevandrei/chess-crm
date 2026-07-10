@@ -14,7 +14,7 @@ class Trainer extends Model
         'specialization',
         'rating',
         'branch_id',
-        'bio'
+        'bio',
     ];
 
     public function branch()

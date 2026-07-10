@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Trainer;
 use App\Models\Branch;
+use App\Models\Trainer;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -13,7 +13,7 @@ class TrainerController extends Controller
     {
         return Inertia::render('Trainers/Index', [
             'trainers' => Trainer::with('branch')->orderBy('last_name')->get(),
-            'branches' => Branch::orderBy('name')->get()
+            'branches' => Branch::orderBy('name')->get(),
         ]);
     }
 
@@ -27,7 +27,7 @@ class TrainerController extends Controller
             'specialization' => 'required|string|max:20',
             'rating' => 'nullable|integer',
             'branch_id' => 'required|exists:branches,id',
-            'bio' => 'nullable|string|max:500'
+            'bio' => 'nullable|string|max:500',
         ]);
 
         Trainer::create($validated);
@@ -40,12 +40,12 @@ class TrainerController extends Controller
         $validated = $request->validate([
             'first_name' => 'required|string|max:20',
             'last_name' => 'required|string|max:20',
-            'email' => 'required|email|unique:trainers,email,' . $trainer->id,
-            'phone' => 'required|string|max:20|unique:trainers,phone,' . $trainer->id,
+            'email' => 'required|email|unique:trainers,email,'.$trainer->id,
+            'phone' => 'required|string|max:20|unique:trainers,phone,'.$trainer->id,
             'specialization' => 'required|string|max:20',
             'rating' => 'nullable|integer',
             'branch_id' => 'nullable|exists:branches,id',
-            'bio' => 'nullable|string|max:500'
+            'bio' => 'nullable|string|max:500',
         ]);
 
         $trainer->update($validated);

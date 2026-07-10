@@ -11,7 +11,7 @@ class BranchController extends Controller
     public function index()
     {
         return Inertia::render('Branches/Index', [
-            'branches' => Branch::orderBy('name')->get()
+            'branches' => Branch::orderBy('name')->get(),
         ]);
     }
 
@@ -20,7 +20,7 @@ class BranchController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
-            'phone' => 'required|string|max:20|unique:branches,phone'
+            'phone' => 'required|string|max:20|unique:branches,phone',
         ]);
 
         Branch::create($validated);
@@ -33,7 +33,7 @@ class BranchController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
-            'phone' => 'required|string|max:20|unique:branches,phone,' . $branch->id,
+            'phone' => 'required|string|max:20|unique:branches,phone,'.$branch->id,
         ]);
 
         $branch->update($validated);

@@ -10,7 +10,7 @@ class RatingHistory extends Model
         'student_id',
         'fide_rating',
         'local_rating',
-        'recorded_at'
+        'recorded_at',
     ];
 
     public function student()

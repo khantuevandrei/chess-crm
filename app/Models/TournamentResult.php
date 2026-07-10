@@ -11,7 +11,7 @@ class TournamentResult extends Model
         'student_id',
         'place',
         'points',
-        'rating_change'
+        'rating_change',
     ];
 
     public function tournament()

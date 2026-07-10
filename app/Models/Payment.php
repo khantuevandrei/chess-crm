@@ -11,7 +11,7 @@ class Payment extends Model
         'amount',
         'paid_at',
         'method',
-        'description'
+        'description',
     ];
 
     public function student()

@@ -11,7 +11,7 @@ class Tournament extends Model
         'location',
         'start_date',
         'end_date',
-        'type'
+        'type',
     ];
 
     public function tournamentResults()

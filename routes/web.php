@@ -1,10 +1,10 @@
 <?php
 
 use App\Http\Controllers\BranchController;
-use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TrainerController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
@@ -30,4 +30,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/trainers/{trainer}', [TrainerController::class, 'destroy'])->name('trainers.destroy');
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

@@ -15,7 +15,7 @@ class Lesson extends Model
         'start_time',
         'end_time',
         'status',
-        'notes'
+        'notes',
     ];
 
     public function branch()
