@@ -22,8 +22,8 @@ class TrainerController extends Controller
         $validated = $request->validate([
             'first_name' => 'required|string|max:20',
             'last_name' => 'required|string|max:20',
-            'email' => 'required|email|unique:trainers,email',
-            'phone' => 'required|string|max:20|unique:trainers,phone',
+            'email' => 'required|email|unique:trainers,email,',
+            'phone' => 'required|string|max:20|unique:trainers,phone,',
             'specialization' => 'required|string|max:20',
             'rating' => 'nullable|integer',
             'branch_id' => 'required|exists:branches,id',
