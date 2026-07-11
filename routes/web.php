@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LessonController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TrainerController;
@@ -34,6 +35,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/students', [StudentController::class, 'store'])->name('students.store');
     Route::put('/students/{student}', [StudentController::class, 'update'])->name('students.update');
     Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
+
+    Route::get('/lessons', [LessonController::class, 'index'])->name('lessons.index');
+    Route::post('/lessons', [LessonController::class, 'store'])->name('lessons.store');
+    Route::put('/lessons/{lesson}', [LessonController::class, 'update'])->name('lessons.update');
+    Route::delete('/lessons/{lesson}', [LessonController::class, 'destroy'])->name('lessons.destroy');
 });
 
 require __DIR__.'/auth.php';
