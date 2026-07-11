@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Branch;
 use App\Models\Student;
+use App\Models\Trainer;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -14,6 +15,7 @@ class StudentController extends Controller
         return Inertia::render('Students/Index', [
             'students' => Student::with('branch')->orderBy('last_name')->get(),
             'branches' => Branch::orderBy('name')->get(),
+            'trainers' => Trainer::orderBy('last_name')->get(),
         ]);
     }
 
@@ -31,7 +33,11 @@ class StudentController extends Controller
             'branch_id' => 'required|exists:branches,id',
         ]);
 
-        Student::create($validated);
+        $student = Student::create($validated);
+
+        if ($request->has('trainer_ids')) {
+            $student->trainers()->sync($request->trainer_ids);
+        }
 
         return redirect()->route('students.index')->with('success', 'Student created');
     }
@@ -51,6 +57,7 @@ class StudentController extends Controller
         ]);
 
         $student->update($validated);
+        $student->trainers()->sync($request->trainer_ids ?? []);
 
         return redirect()->route('students.index')->with('success', 'Student updated');
     }

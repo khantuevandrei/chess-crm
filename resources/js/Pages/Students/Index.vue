@@ -5,6 +5,7 @@ import { ref } from 'vue';
 const props = defineProps({
     students: Array,
     branches: Array,
+    trainers: Array,
     success: String
 })
 
@@ -17,7 +18,8 @@ const form = useForm({
     rank: '',
     parent_name: '',
     parent_phone: '',
-    branch_id: ''
+    branch_id: '',
+    trainer_ids: []
 })
 
 const editingId = ref(null)
@@ -30,7 +32,8 @@ const editForm = useForm({
     rank: '',
     parent_name: '',
     parent_phone: '',
-    branch_id: ''
+    branch_id: '',
+    trainer_ids: []
 })
 
 function startEdit(student) {
@@ -44,6 +47,7 @@ function startEdit(student) {
     editForm.parent_name = student.parent_name
     editForm.parent_phone = student.parent_phone
     editForm.branch_id = student.branch_id
+    editForm.trainer_ids = student.trainer_ids.map(t => t.id)
 }
 
 function cancelEdit(id) {
@@ -103,6 +107,12 @@ function deleteStudent(id) {
             </option>
         </select>
 
+        <select v-model="form.trainer_ids" multiple>
+            <option v-for="trainer in trainers" :key="trainer.id" :value="trainer.id">
+                {{ trainer.last_name }} {{ trainer.first_name }}
+            </option>
+        </select>
+
         <button type="submit" :disabled="form.processing">Add</button>
     </form>
 
@@ -136,6 +146,12 @@ function deleteStudent(id) {
                 <select v-model="editForm.branch_id">
                     <option v-for="branch in branches" :key="branch.id" :value="branch.id">
                         {{ branch.name }}
+                    </option>
+                </select>
+
+                <select v-model="editForm.trainer_ids" multiple>
+                    <option v-for="trainer in trainers" :key="trainer.id" :value="trainer.id">
+                        {{ trainer.last_name }} {{ trainer.first_name }}
                     </option>
                 </select>
 
