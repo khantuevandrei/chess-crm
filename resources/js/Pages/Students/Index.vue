@@ -47,7 +47,9 @@ function startEdit(student) {
     editForm.parent_name = student.parent_name
     editForm.parent_phone = student.parent_phone
     editForm.branch_id = student.branch_id
-    editForm.trainer_ids = student.trainer_ids.map(t => t.id)
+    console.log('student:', student)
+    console.log('trainers:', student.trainers)
+    editForm.trainer_ids = student.trainers.map(t => t.id) || []
 }
 
 function cancelEdit(id) {

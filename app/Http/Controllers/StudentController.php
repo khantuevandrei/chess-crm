@@ -13,7 +13,7 @@ class StudentController extends Controller
     public function index()
     {
         return Inertia::render('Students/Index', [
-            'students' => Student::with('branch')->orderBy('last_name')->get(),
+            'students' => Student::with('branch', 'trainers')->orderBy('last_name')->get(),
             'branches' => Branch::orderBy('name')->get(),
             'trainers' => Trainer::orderBy('last_name')->get(),
         ]);
