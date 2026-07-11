@@ -56,10 +56,13 @@ function deleteBranch(id) {
     })">
         <input v-model="form.name" placeholder="Title" />
         <p v-if="form.errors.name" style="color:red">{{ form.errors.name }}</p>
+
         <input v-model="form.address" placeholder="Address" />
         <p v-if="form.errors.address" style="color:red">{{ form.errors.address }}</p>
+
         <input v-model="form.phone" placeholder="Phone" />
         <p v-if="form.errors.phone" style="color:red">{{ form.errors.phone }}</p>
+
         <button type="submit" :disabled="form.processing">Add</button>
     </form>
 
@@ -68,10 +71,13 @@ function deleteBranch(id) {
             <template v-if="editingId === branch.id">
                 <input v-model="editForm.name" />
                 <p v-if="editForm.errors.name" style="color:red">{{ editForm.errors.name }}</p>
+
                 <input v-model="editForm.address" />
                 <p v-if="editForm.errors.address" style="color:red">{{ editForm.errors.address }}</p>
+
                 <input v-model="editForm.phone" />
                 <p v-if="editForm.errors.phone" style="color:red">{{ editForm.errors.phone }}</p>
+
                 <button @click="updateBranch(branch.id)">Save</button>
                 <button @click="cancelEdit()">Cancel</button>
             </template>
