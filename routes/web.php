@@ -10,11 +10,13 @@ use App\Http\Controllers\TournamentController;
 use App\Http\Controllers\TrainerController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+Route::get('/', function () {
+    return redirect('/dashboard');
+});
 
 Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -53,4 +55,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/tournaments/{tournament}/results/{result}', [TournamentController::class, 'deleteResult'])->name('tournaments.results.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
