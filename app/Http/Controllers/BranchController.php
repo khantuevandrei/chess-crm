@@ -27,10 +27,10 @@ class BranchController extends Controller
                 ->orderBy('name')->get(),
             'stats' => [
                 ['title' => 'Branches', 'value' => Branch::count(), 'change' => Branch::where('status', 'active')->count() . ' active', 'icon' => 'pi pi-building', 'color' => 'purple', 'positive' => false],
-                ['title' => 'Trainers', 'value' => Trainer::count(), 'change' => ($trainerChange >= 0 ? '+' : '') . $trainerChange . ' this month', 'icon' => 'pi pi-user', 'color' => 'blue', 'positive' => true],
-                ['title' => 'Students', 'value' => Student::count(), 'change' => ($studentChange >= 0 ? '+' : '') . $studentChange . ' this month', 'icon' => 'pi pi-users', 'color' => 'green', 'positive' => true],
-                ['title' => 'Week Lessons', 'value' => Lesson::whereBetween('start_time', [now()->startOfWeek(), now()->endOfWeek()])->count(), 'change' => 'Lessons', 'icon' => 'pi pi-calendar', 'color' => 'orange', 'positive' => false],
-                ['title' => 'Today Lessons', 'value' => Lesson::whereDate('start_time', today())->count(), 'change' => 'Scheduled', 'icon' => 'pi pi-calendar-clock', 'color' => 'yellow', 'positive' => false],
+                ['title' => 'Students', 'value' => Student::count(), 'change' => ($studentChange >= 0 ? '+' : '') . $studentChange . ' this month', 'icon' => 'pi pi-users', 'color' => 'blue', 'positive' => true],
+                ['title' => 'Trainers', 'value' => Trainer::count(), 'change' => ($trainerChange >= 0 ? '+' : '') . $trainerChange . ' this month', 'icon' => 'pi pi-user', 'color' => 'green', 'positive' => true],
+                ['title' => 'Total Capacity', 'value' => Branch::sum('capacity'), 'change' => 'Students limit', 'icon' => 'pi pi-chart-bar', 'color' => 'orange', 'positive' => false],
+                ['title' => 'Occupancy Rate', 'value' => Branch::sum('capacity') > 0 ? round((Student::count() / Branch::sum('capacity')) * 100) . '%' : 'N/A', 'change' => 'Students / Capacity', 'icon' => 'pi pi-percentage', 'color' => 'yellow', 'positive' => false],
                 ['title' => 'Revenue', 'value' => '$' . number_format(Payment::whereMonth('paid_at', now()->month)->sum('amount')), 'change' => 'This month', 'icon' => 'pi pi-wallet', 'color' => 'gold', 'positive' => false],
             ],
         ]);
