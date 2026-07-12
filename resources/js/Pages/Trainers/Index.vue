@@ -1,6 +1,7 @@
 <script setup>
 import { useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { InputText, Button } from 'primevue';
 
 const props = defineProps({
     trainers: Array,
@@ -70,73 +71,79 @@ function deleteTrainer(id) {
     <form @submit.prevent="form.post('/trainers', {
         onSuccess: () => form.reset()
     })">
-        <input v-model="form.first_name" placeholder="First name" />
-        <p v-if="form.errors.first_name" style="color:red">{{ form.errors.first_name }}</p>
+        <div class="flex flex-column gap-2 mb-3">
+            <InputText v-model="form.first_name" placeholder="First name" />
+            <p v-if="form.errors.first_name" style="color:red">{{ form.errors.first_name }}</p>
 
-        <input v-model="form.last_name" placeholder="Last name" />
-        <p v-if="form.errors.last_name" style="color:red">{{ form.errors.last_name }}</p>
+            <InputText v-model="form.last_name" placeholder="Last name" />
+            <p v-if="form.errors.last_name" style="color:red">{{ form.errors.last_name }}</p>
 
-        <input v-model="form.email" placeholder="Email" />
-        <p v-if="form.errors.email" style="color:red">{{ form.errors.email }}</p>
+            <InputText v-model="form.email" placeholder="Email" />
+            <p v-if="form.errors.email" style="color:red">{{ form.errors.email }}</p>
 
-        <input v-model="form.phone" placeholder="Phone" />
-        <p v-if="form.errors.phone" style="color:red">{{ form.errors.phone }}</p>
+            <InputText v-model="form.phone" placeholder="Phone" />
+            <p v-if="form.errors.phone" style="color:red">{{ form.errors.phone }}</p>
 
-        <input v-model="form.specialization" placeholder="Specialization" />
-        <p v-if="form.errors.specialization" style="color:red">{{ form.errors.specialization }}</p>
+            <InputText v-model="form.specialization" placeholder="Specialization" />
+            <p v-if="form.errors.specialization" style="color:red">{{ form.errors.specialization }}</p>
 
-        <input v-model="form.rating" placeholder="Rating" />
-        <p v-if="form.errors.rating" style="color:red">{{ form.errors.rating }}</p>
+            <InputText v-model="form.rating" placeholder="Rating" />
+            <p v-if="form.errors.rating" style="color:red">{{ form.errors.rating }}</p>
 
-        <select v-model="form.branch_id">
-            <option v-for="branch in branches" :key="branch.id" :value="branch.id">
-                {{ branch.name }}
-            </option>
-        </select>
+            <select v-model="form.branch_id">
+                <option v-for="branch in branches" :key="branch.id" :value="branch.id">
+                    {{ branch.name }}
+                </option>
+            </select>
 
-        <input v-model="form.bio" placeholder="Bio" />
-        <p v-if="form.errors.bio" style="color:red">{{ form.errors.bio }}</p>
+            <InputText v-model="form.bio" placeholder="Bio" />
+            <p v-if="form.errors.bio" style="color:red">{{ form.errors.bio }}</p>
 
-        <button type="submit" :disabled="form.processing">Add</button>
+            <Button type="submit" :disabled="form.processing">Add</button>
+        </div>
     </form>
 
-    <ul>
+    <ul class="flex flex-column gap-3">
         <li v-for="trainer in trainers" :key="trainer.id">
             <template v-if="editingId === trainer.id">
-                <input v-model="editForm.first_name" />
-                <p v-if="editForm.errors.first_name" style="color:red">{{ editForm.errors.first_name }}</p>
+                <div class="flex flex-column gap-2">
+                    <InputText v-model="editForm.first_name" />
+                    <p v-if="editForm.errors.first_name" style="color:red">{{ editForm.errors.first_name }}</p>
 
-                <input v-model="editForm.last_name" />
-                <p v-if="editForm.errors.last_name" style="color:red">{{ editForm.errors.last_name }}</p>
+                    <InputText v-model="editForm.last_name" />
+                    <p v-if="editForm.errors.last_name" style="color:red">{{ editForm.errors.last_name }}</p>
 
-                <input v-model="editForm.email" />
-                <p v-if="editForm.errors.email" style="color:red">{{ editForm.errors.email }}</p>
+                    <InputText v-model="editForm.email" />
+                    <p v-if="editForm.errors.email" style="color:red">{{ editForm.errors.email }}</p>
 
-                <input v-model="editForm.phone" />
-                <p v-if="editForm.errors.phone" style="color:red">{{ editForm.errors.phone }}</p>
+                    <InputText v-model="editForm.phone" />
+                    <p v-if="editForm.errors.phone" style="color:red">{{ editForm.errors.phone }}</p>
 
-                <input v-model="editForm.specialization" />
-                <p v-if="editForm.errors.specialization" style="color:red">{{ editForm.errors.specialization }}</p>
+                    <InputText v-model="editForm.specialization" />
+                    <p v-if="editForm.errors.specialization" style="color:red">{{ editForm.errors.specialization }}</p>
 
-                <input v-model="editForm.rating" />
-                <p v-if="editForm.errors.rating" style="color:red">{{ editForm.errors.rating }}</p>
+                    <InputText v-model="editForm.rating" />
+                    <p v-if="editForm.errors.rating" style="color:red">{{ editForm.errors.rating }}</p>
 
-                <select v-model="editForm.branch_id">
-                    <option v-for="branch in branches" :key="branch.id" :value="branch.id">
-                        {{ branch.name }}
-                    </option>
-                </select>
+                    <select v-model="editForm.branch_id">
+                        <option v-for="branch in branches" :key="branch.id" :value="branch.id">
+                            {{ branch.name }}
+                        </option>
+                    </select>
 
-                <input v-model="editForm.bio" />
-                <p v-if="editForm.errors.bio" style="color:red">{{ editForm.errors.bio }}</p>
+                    <InputText v-model="editForm.bio" />
+                    <p v-if="editForm.errors.bio" style="color:red">{{ editForm.errors.bio }}</p>
 
-                <button @click="updateTrainer(trainer.id)">Save</button>
-                <button @click="cancelEdit()">Cancel</button>
+                    <Button @click="updateTrainer(trainer.id)">Save</button>
+                    <Button @click="cancelEdit()">Cancel</button>
+                </div>
             </template>
             <template v-else>
-                {{ trainer.first_name }} {{ trainer.last_name }}
-                <button @click="startEdit(trainer)">Edit</button>
-                <button @click="deleteTrainer(trainer.id)">Delete</button>
+                <div class="flex gap-2 align-items-center">
+                    <span>{{ trainer.first_name }} {{ trainer.last_name }}</span>
+                    <Button @click="startEdit(trainer)">Edit</button>
+                    <Button @click="deleteTrainer(trainer.id)">Delete</button>
+                </div>
             </template>
         </li>
     </ul>

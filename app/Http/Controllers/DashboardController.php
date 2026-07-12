@@ -14,16 +14,40 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        $studentsThisMonth = Student::whereMonth('created_at', now()->month)->count();
+        $studentsLastMonth = Student::whereMonth('created_at', now()->subMonth()->month)->count();
+        $studentChange = $studentsThisMonth - $studentsLastMonth;
+
+        $trainersThisMonth = Trainer::whereMonth('created_at', now()->month)->count();
+        $trainersLastMonth = Trainer::whereMonth('created_at', now()->subMonth()->month)->count();
+        $trainerChange = $trainersThisMonth - $trainersLastMonth;
+
+        $revenueThisMonth = Payment::whereMonth('paid_at', now()->month)->sum('amount');
+        $revenueLastMonth = Payment::whereMonth('paid_at', now()->subMonth()->month)->sum('amount');
+        $revenueChange = $revenueLastMonth > 0 ? round((($revenueThisMonth - $revenueLastMonth) / $revenueLastMonth) * 100) : 0;
+
         return Inertia::render('Dashboard', [
             'stats' => [
-                'students_count' => Student::count(),
-                'trainers_count' => Trainer::count(),
-                'branches_count' => Branch::count(),
-                'today_lessons' => Lesson::whereDate('start_time', today())->count(),
-                'week_lessons' => Lesson::whereBetween('start_time', [now()->startOfWeek(), now()->endOfWeek()])->count(),
-                'month_payments' => Payment::whereMonth('paid_at', now()->month)->sum('amount'),
-                'upcoming_tournaments' => Tournament::where('start_date', '>=', today())->orderBy('start_date')->limit(3)->get(),
+                ['title' => 'Students', 'value' => Student::count(), 'change' => ($studentChange >= 0 ? '+' : '').$studentChange.' this month', 'icon' => 'pi pi-users', 'color' => 'purple', 'positive' => true],
+                ['title' => 'Trainers', 'value' => Trainer::count(), 'change' => ($trainerChange >= 0 ? '+' : '').$trainerChange.' this month', 'icon' => 'pi pi-user', 'color' => 'blue', 'positive' => true],
+                ['title' => 'Branches', 'value' => Branch::count(), 'change' => 'Active schools', 'icon' => 'pi pi-building', 'color' => 'green', 'positive' => false],
+                ['title' => 'Lessons Today', 'value' => Lesson::whereDate('start_time', today())->count(), 'change' => 'Scheduled', 'icon' => 'pi pi-calendar', 'color' => 'orange', 'positive' => false],
+                ['title' => 'This Week', 'value' => Lesson::whereBetween('start_time', [now()->startOfWeek(), now()->endOfWeek()])->count(), 'change' => 'Lessons', 'icon' => 'pi pi-calendar-clock', 'color' => 'yellow', 'positive' => false],
+                ['title' => 'Revenue', 'value' => '$'.number_format(Payment::whereMonth('paid_at', now()->month)->sum('amount')), ($revenueChange >= 0 ? '+' : '').$revenueChange.'%', 'icon' => 'pi pi-wallet', 'color' => 'gold', 'positive' => true],
             ],
+            'tournaments' => Tournament::where('start_date', '>=', today())
+                ->orderBy('start_date')
+                ->limit(4)
+                ->get()
+                ->map(fn ($t) => [
+                    'id' => $t->id,
+                    'name' => $t->name,
+                    'date' => $t->start_date->format('d M Y'),
+                    'location' => $t->location,
+                    'type' => $t->type,
+                    'icon' => 'pi pi-trophy',
+                    'color' => 'purple',
+                ]),
         ]);
     }
 }

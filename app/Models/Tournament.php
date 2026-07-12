@@ -14,6 +14,14 @@ class Tournament extends Model
         'type',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'start_date' => 'datetime',
+            'end_date' => 'datetime',
+        ];
+    }
+
     public function tournamentResults()
     {
         return $this->hasMany(TournamentResult::class);

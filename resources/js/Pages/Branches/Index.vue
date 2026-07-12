@@ -1,6 +1,7 @@
 <script setup>
 import { useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { InputText, Button } from 'primevue';
 
 const props = defineProps({
     branches: Array,
@@ -54,37 +55,39 @@ function deleteBranch(id) {
     <form @submit.prevent="form.post('/branches', {
         onSuccess: () => form.reset()
     })">
-        <input v-model="form.name" placeholder="Title" />
-        <p v-if="form.errors.name" style="color:red">{{ form.errors.name }}</p>
+        <div class="flex flex-column gap-2 mb-3 max-w-sm">
+            <InputText v-model="form.name" placeholder="Title" />
+            <p v-if="form.errors.name" style="color:red">{{ form.errors.name }}</p>
 
-        <input v-model="form.address" placeholder="Address" />
-        <p v-if="form.errors.address" style="color:red">{{ form.errors.address }}</p>
+            <InputText v-model="form.address" placeholder="Address" />
+            <p v-if="form.errors.address" style="color:red">{{ form.errors.address }}</p>
 
-        <input v-model="form.phone" placeholder="Phone" />
-        <p v-if="form.errors.phone" style="color:red">{{ form.errors.phone }}</p>
+            <InputText v-model="form.phone" placeholder="Phone" />
+            <p v-if="form.errors.phone" style="color:red">{{ form.errors.phone }}</p>
 
-        <button type="submit" :disabled="form.processing">Add</button>
+            <Button type="submit" :disabled="form.processing">Add</Button>
+        </div>
     </form>
 
-    <ul>
+    <ul class="flex flex-column gap-3">
         <li v-for="branch in branches" :key="branch.id">
             <template v-if="editingId === branch.id">
-                <input v-model="editForm.name" />
-                <p v-if="editForm.errors.name" style="color:red">{{ editForm.errors.name }}</p>
-
-                <input v-model="editForm.address" />
-                <p v-if="editForm.errors.address" style="color:red">{{ editForm.errors.address }}</p>
-
-                <input v-model="editForm.phone" />
-                <p v-if="editForm.errors.phone" style="color:red">{{ editForm.errors.phone }}</p>
-
-                <button @click="updateBranch(branch.id)">Save</button>
-                <button @click="cancelEdit()">Cancel</button>
+                <div class="flex flex-column gap-2">
+                    <InputText v-model="editForm.name" />
+                    <InputText v-model="editForm.address" />
+                    <InputText v-model="editForm.phone" />
+                    <div class="flex gap-2">
+                        <Button @click="updateBranch(branch.id)">Save</Button>
+                        <Button @click="cancelEdit()">Cancel</Button>
+                    </div>
+                </div>
             </template>
             <template v-else>
-                {{ branch.name }} - {{ branch.address }} - {{ branch.phone }}
-                <button @click="startEdit(branch)">Edit</button>
-                <button @click="deleteBranch(branch.id)">Delete</button>
+                <div class="flex gap-2 align-items-center">
+                    <span>{{ branch.name }} - {{ branch.address }} - {{ branch.phone }}</span>
+                    <Button @click="startEdit(branch)">Edit</Button>
+                    <Button @click="deleteBranch(branch.id)">Delete</Button>
+                </div>
             </template>
         </li>
     </ul>

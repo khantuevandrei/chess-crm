@@ -1,0 +1,175 @@
+/* ------------------------------------------------ */
+/* Layout */
+/* ------------------------------------------------ */
+
+.dashboard {
+    padding: 2rem;
+    background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+    min-height: 100vh;
+}
+
+/* ------------------------------------------------ */
+/* Header */
+/* ------------------------------------------------ */
+
+.page-title {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.page-subtitle {
+    color: #6b7280;
+    font-size: .95rem;
+}
+
+/* ------------------------------------------------ */
+/* Cards */
+/* ------------------------------------------------ */
+
+.dashboard-card,
+.action-card {
+    background: rgba(255,255,255,.92);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 12px 40px rgba(15,23,42,.08), 0 2px 8px rgba(15,23,42,.05);
+    transition: transform .25s, box-shadow .25s;
+    border-radius: 22px;
+    border: none;
+}
+
+.dashboard-card:hover,
+.action-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 22px 55px rgba(15,23,42,.12);
+}
+
+.chart-card,
+.tournament-card {
+    height: 100%;
+}
+
+.action-card {
+    cursor: pointer;
+}
+
+/* ------------------------------------------------ */
+/* Statistics */
+/* ------------------------------------------------ */
+
+.stat-title {
+    font-size: .85rem;
+    color: #6b7280;
+    margin-bottom: .7rem;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1;
+}
+
+.stat-change {
+    margin-top: 1rem;
+    color: #6b7280;
+    font-size: .85rem;
+    display: flex;
+    align-items: center;
+}
+
+.stat-change.positive {
+    color: #16a34a;
+    font-weight: 600;
+}
+
+/* ------------------------------------------------ */
+/* Avatar Colors */
+/* ------------------------------------------------ */
+
+.stat-avatar,
+.action-avatar,
+.tournament-avatar {
+    color: white;
+}
+
+.purple { background: linear-gradient(135deg, #7c3aed, #9333ea); }
+.blue { background: linear-gradient(135deg, #2563eb, #3b82f6); }
+.green { background: linear-gradient(135deg, #16a34a, #22c55e); }
+.orange { background: linear-gradient(135deg, #ea580c, #fb923c); }
+.yellow { background: linear-gradient(135deg, #d97706, #fbbf24); }
+.gold { background: linear-gradient(135deg, #ca8a04, #facc15); }
+
+/* ------------------------------------------------ */
+/* Summary */
+/* ------------------------------------------------ */
+
+.summary-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111827;
+}
+
+.summary-label {
+    margin-top: .35rem;
+    color: #6b7280;
+    font-size: .85rem;
+}
+
+/* ------------------------------------------------ */
+/* Tournament */
+/* ------------------------------------------------ */
+
+.tournament-item:last-child .p-divider {
+    display: none;
+}
+
+.tournament-title {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #111827;
+}
+
+.tournament-date,
+.tournament-place {
+    margin-top: .5rem;
+    color: #6b7280;
+    font-size: .9rem;
+}
+
+/* ------------------------------------------------ */
+/* Quick actions */
+/* ------------------------------------------------ */
+
+.action-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.action-description {
+    margin-top: .35rem;
+    color: #6b7280;
+    font-size: .9rem;
+}
+
+.action-card:hover .action-avatar {
+    transform: rotate(-8deg) scale(1.1);
+}
+
+.action-avatar {
+    transition: all .25s;
+}
+
+/* ------------------------------------------------ */
+/* Responsive */
+/* ------------------------------------------------ */
+
+@media (max-width:1200px) { .stat-value { font-size:1.7rem; } }
+@media (max-width:991px) { .dashboard { padding:1.25rem; } .page-title { font-size:1.7rem; } }
+@media (max-width:768px) {
+    .dashboard { padding:1rem; }
+    .page-title { font-size:1.5rem; }
+    .summary-value { font-size:1.2rem; }
+}
+@media (max-width:576px) { .page-title { font-size:1.35rem; } .stat-value { font-size:1.6rem; } }

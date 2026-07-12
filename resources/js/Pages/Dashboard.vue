@@ -1,46 +1,27 @@
 <script setup>
+import StatsGrid from './Components/Dashboard/StatsGrid.vue';
+import RevenueChart from './Components/Dashboard/RevenueChart.vue';
+import TournamentsList from './Components/Dashboard/TournamentsList.vue';
+import QuickActions from './Components/Dashboard/QuickActions.vue';
+import AuthenticatedLayout from '../Layouts/AuthenticatedLayout.vue';
+
 defineProps({
-    stats: Object
+    stats: Array,
+    tournaments: Array
 })
 </script>
 
 <template>
-    <h1>Chess CRM Dashboard</h1>
-
-    <div style="display:flex; gap:1rem;">
-        <div>
-            <h3>Students</h3>
-            <p>{{ stats.students_count }}</p>
+    <AuthenticatedLayout>
+        <StatsGrid :stats="stats" />
+        <div class="grid mt-3">
+            <div class="col-12 xl:col-8">
+                <RevenueChart />
+            </div>
+            <div class="col-12 xl:col-4">
+                <TournamentsList :tournaments="tournaments" />
+            </div>
         </div>
-        <div>
-            <h3>Trainers</h3>
-            <p>{{ stats.trainers_count }}</p>
-        </div>
-        <div>
-            <h3>Branches</h3>
-            <p>{{ stats.branches_count }}</p>
-        </div>
-    </div>
-
-    <div style="display:flex; gap:1rem; margin-top:1rem">
-        <div>
-            <h3>Today Lessons</h3>
-            <p>{{ stats.today_lessons }}</p>
-        </div>
-        <div>
-            <h3>Week Lessons</h3>
-            <p>{{ stats.week_lessons }}</p>
-        </div>
-        <div>
-            <h3>Month Payments</h3>
-            <p>{{ stats.month_payments }}</p>
-        </div>
-    </div>
-
-    <h2 style="margin-top:2rem">Upcoming Tournaments</h2>
-    <ul>
-        <li v-for="t in stats.upcoming_tournaments" :key="t.id">
-            {{ t.name }} - {{ t.start_date }}
-        </li>
-    </ul>
+        <QuickActions />
+    </AuthenticatedLayout>
 </template>
