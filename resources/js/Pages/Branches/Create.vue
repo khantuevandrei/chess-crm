@@ -14,7 +14,6 @@ defineProps({ branch: Object })
                 / New Branch
             </div>
             <h1 class="page-title">Create Branch</h1>
-            <p class="page-subtitle">Fill in the information about the new branch.</p>
         </div>
         <BranchForm />
     </AuthenticatedLayout>
