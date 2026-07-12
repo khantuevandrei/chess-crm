@@ -57,4 +57,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/tournaments/{tournament}/results/{result}', [TournamentController::class, 'deleteResult'])->name('tournaments.results.destroy');
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
