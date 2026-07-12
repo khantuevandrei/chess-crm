@@ -1,45 +1,24 @@
 <script setup>
-import { useForm, router } from '@inertiajs/vue3';
-import { ref } from 'vue';
-import { InputText, Button, Card } from 'primevue';
+import { Link, router } from '@inertiajs/vue3';
+import { ref, computed } from 'vue';
+import { InputText, Button, Card, DataTable, Column, Tag } from 'primevue';
 import AuthenticatedLayout from '../../Layouts/AuthenticatedLayout.vue';
+import StatsGrid from '../../Components/StatsGrid.vue';
 
 const props = defineProps({
     branches: Array,
-    success: String,
+    kpi: Array,
 })
 
-const showForm = ref(false)
-const form = useForm({ name: '', address: '', phone: '' })
-const editingId = ref(null)
-const editForm = useForm({ name: '', address: '', phone: '' })
+const searchQuery = ref('')
 
-function openAddForm() {
-    showForm.value = true
-    form.reset()
-}
-
-function storeBranch() {
-    form.post('/branches', { onSuccess: () => { showForm.value = false; form.reset() } })
-}
-
-function startEdit(branch) {
-    editingId.value = branch.id
-    editForm.name = branch.name
-    editForm.address = branch.address
-    editForm.phone = branch.phone
-}
-
-function cancelEdit() {
-    editingId.value = null
-}
-
-function updateBranch(id) {
-    editForm.put(`/branches/${id}`, { onSuccess: () => editingId.value = null })
-}
+const filteredBranches = computed(() => {
+    if (!searchQuery.value) return props.branches
+    return props.branches.filter(b => b.name.toLowerCase().includes(searchQuery.value.toLowerCase()))
+})
 
 function deleteBranch(id) {
-    if (confirm('Delete branch?')) {
+    if (confirm('Delete this branch?')) {
         router.delete(`/branches/${id}`)
     }
 }
@@ -47,73 +26,55 @@ function deleteBranch(id) {
 
 <template>
     <AuthenticatedLayout title="Branches">
+        <!-- KPI Cards -->
+        <StatsGrid :stats="kpi" class="mb-4" />
 
-        <p v-if="$page.props.success" style="color:green" class="mb-3">{{ $page.props.success }}</p>
-
-        <div class="flex justify-content-between align-items-center mb-4">
-            <span class="text-xl font-bold">{{ branches.length }} Branches</span>
-            <Button @click="openAddForm" icon="pi pi-plus" label="Add Branch" />
-        </div>
-
-        <!-- Creation form -->
-        <Card v-if="showForm" class="mb-4">
+        <!-- Main Card -->
+        <Card>
             <template #content>
-                <form @submit.prevent="storeBranch">
-                    <div class="flex flex-column gap-3">
-                        <div>
-                            <label class="text-sm text-gray-600 mb-1 block">Name</label>
-                            <InputText v-model="form.name" placeholder="Enter branch name" class="w-full" />
-                            <p v-if="form.errors.name" style="color:red" class="mt-1">{{ form.errors.name }}</p>
-                        </div>
-                        <div>
-                            <label class="text-sm text-gray-600 mb-1 block">Address</label>
-                            <InputText v-model="form.address" placeholder="Enter address" class="w-full" />
-                            <p v-if="form.errors.address" style="color:red" class="mt-1">{{ form.errors.address }}</p>
-                        </div>
-                        <div>
-                            <label class="text-sm text-gray-600 mb-1 block">Phone</label>
-                            <InputText v-model="form.phone" placeholder="Enter phone" class="w-full" />
-                            <p v-if="form.errors.phone" style="color:red" class="mt-1">{{ form.errors.phone }}</p>
-                        </div>
-                        <div class="flex gap-2">
-                            <Button type="submit" :disabled="form.processing">Save</Button>
-                            <Button severity="secondary" @click="showForm = false">Cancel</Button>
-                        </div>
-                    </div>
-                </form>
+                <!-- Toolbar -->
+                <div class="flex justify-content-between align-items-center mb-4">
+                    <InputText v-model="searchQuery" placeholder="Search branches..." />
+                    <Link href="/branches/create" class="p-button no-underline">
+                        <i class="pi pi-plus mr-2" /> Add Branch
+                    </Link>
+                </div>
+
+                <!-- Table -->
+                <DataTable :value="filteredBranches" stripedRows size="small" :paginator="true" :rows="10">
+                    <Column header="Name" sortable sortField="name">
+                        <template #body="{ data }">
+                            <div class="font-bold">{{ data.name }}</div>
+                            <div class="text-xs text-gray-500">{{ data.short_name || data.type }}</div>
+                        </template>
+                    </Column>
+                    <Column header="Address" sortable sortField="address">
+                        <template #body="{ data }">
+                            {{ data.address }}, {{ data.city }}
+                        </template>
+                    </Column>
+                    <Column header="Phone" field="phone" />
+                    <Column header="Students" field="students_count" />
+                    <Column header="Trainers" field="trainers_count" />
+                    <Column header="Status">
+                        <template #body="{ data }">
+                            <Tag :value="data.status" :severity="data.status === 'active' ? 'success' : 'secondary'" />
+                        </template>
+                    </Column>
+                    <Column header="Actions">
+                        <template #body="{ data }">
+                            <div class="flex gap-1">
+                                <Link :href="`/branches/${data.id}/edit`"
+                                    class="p-button p-button-sm p-button-secondary no-underline">
+                                    <i class="pi pi-pencil" />
+                                </Link>
+                                <Button icon="pi pi-trash" severity="danger" size="small"
+                                    @click="deleteBranch(data.id)" />
+                            </div>
+                        </template>
+                    </Column>
+                </DataTable>
             </template>
         </Card>
-
-        <!-- List -->
-        <div class="flex flex-column gap-3">
-            <Card v-for="branch in branches" :key="branch.id">
-                <template #content>
-                    <template v-if="editingId === branch.id">
-                        <div class="flex flex-column gap-3">
-                            <InputText v-model="editForm.name" class="w-full" />
-                            <InputText v-model="editForm.address" class="w-full" />
-                            <InputText v-model="editForm.phone" class="w-full" />
-                            <div class="flex gap-2">
-                                <Button @click="updateBranch(branch.id)">Save</Button>
-                                <Button severity="secondary" @click="cancelEdit()">Cancel</Button>
-                            </div>
-                        </div>
-                    </template>
-                    <template v-else>
-                        <div class="flex justify-content-between align-items-center">
-                            <div>
-                                <div class="font-bold text-lg">{{ branch.name }}</div>
-                                <div class="text-gray-500">{{ branch.address }}</div>
-                                <div class="text-gray-500">{{ branch.phone }}</div>
-                            </div>
-                            <div class="flex gap-2">
-                                <Button severity="secondary" @click="startEdit(branch)">Edit</Button>
-                                <Button severity="danger" @click="deleteBranch(branch.id)">Delete</Button>
-                            </div>
-                        </div>
-                    </template>
-                </template>
-            </Card>
-        </div>
     </AuthenticatedLayout>
 </template>
