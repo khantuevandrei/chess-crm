@@ -43,4 +43,9 @@ class Branch extends Model
     {
         return $this->hasMany(Payment::class);
     }
+
+    public function studentsPayments()
+    {
+        return $this->hasManyThrough(Payment::class, Student::class);
+    }
 }

@@ -25,7 +25,7 @@ class BranchController extends Controller
         return Inertia::render('Branches/Index', [
             'branches' => Branch::withCount(['students', 'trainers'])
                 ->withCount(['lessons' => fn($q) => $q->whereMonth('start_time', now()->month)])
-                ->withSum(['payments' => fn($q) => $q->whereMonth('paid_at', now()->month)], 'amount')
+                ->withSum(['studentsPayments' => fn($q) => $q->whereMonth('paid_at', now()->month)], 'amount')
                 ->orderBy('name')->get(),
             'stats' => [
                 ['title' => 'Branches', 'value' => Branch::count(), 'change' => Branch::where('status', 'active')->count() . ' active', 'icon' => 'pi pi-building', 'color' => 'purple', 'positive' => false],
