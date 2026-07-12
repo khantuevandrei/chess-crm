@@ -11,10 +11,10 @@ const user = page.props.auth.user
 
 const menu = [
     { label: 'Dashboard', icon: 'pi pi-th-large', url: '/dashboard' },
-    { label: 'Students', icon: 'pi pi-users', url: '/students' },
-    { label: 'Trainers', icon: 'pi pi-user', url: '/trainers' },
     { label: 'Branches', icon: 'pi pi-building', url: '/branches' },
-    { label: 'Schedule', icon: 'pi pi-calendar', url: '/lessons' },
+    { label: 'Trainers', icon: 'pi pi-user', url: '/trainers' },
+    { label: 'Students', icon: 'pi pi-users', url: '/students' },
+    { label: 'Lessons', icon: 'pi pi-calendar', url: '/lessons' },
     { label: 'Payments', icon: 'pi pi-wallet', url: '/payments' },
     { label: 'Tournaments', icon: 'pi pi-trophy', url: '/tournaments' },
 ]
