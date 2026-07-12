@@ -1,25 +1,27 @@
 <script setup>
 import { useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import { InputText, Button } from 'primevue';
+import { InputText, Button, Card } from 'primevue';
+import AuthenticatedLayout from '../../Layouts/AuthenticatedLayout.vue';
 
 const props = defineProps({
     branches: Array,
     success: String,
 })
 
-const form = useForm({
-    name: '',
-    address: '',
-    phone: ''
-})
-
+const showForm = ref(false)
+const form = useForm({ name: '', address: '', phone: '' })
 const editingId = ref(null)
-const editForm = useForm({
-    name: '',
-    address: '',
-    phone: ''
-})
+const editForm = useForm({ name: '', address: '', phone: '' })
+
+function openAddForm() {
+    showForm.value = true
+    form.reset()
+}
+
+function storeBranch() {
+    form.post('/branches', { onSuccess: () => { showForm.value = false; form.reset() } })
+}
 
 function startEdit(branch) {
     editingId.value = branch.id
@@ -33,9 +35,7 @@ function cancelEdit() {
 }
 
 function updateBranch(id) {
-    editForm.put(`/branches/${id}`, {
-        onSuccess: () => editingId.value = null
-    })
+    editForm.put(`/branches/${id}`, { onSuccess: () => editingId.value = null })
 }
 
 function deleteBranch(id) {
@@ -46,49 +46,74 @@ function deleteBranch(id) {
 </script>
 
 <template>
-    <h1>Branches</h1>
+    <AuthenticatedLayout title="Branches">
 
-    <p v-if="$page.props.success" style="color:green">
-        {{ $page.props.success }}
-    </p>
+        <p v-if="$page.props.success" style="color:green" class="mb-3">{{ $page.props.success }}</p>
 
-    <form @submit.prevent="form.post('/branches', {
-        onSuccess: () => form.reset()
-    })">
-        <div class="flex flex-column gap-2 mb-3 max-w-sm">
-            <InputText v-model="form.name" placeholder="Title" />
-            <p v-if="form.errors.name" style="color:red">{{ form.errors.name }}</p>
-
-            <InputText v-model="form.address" placeholder="Address" />
-            <p v-if="form.errors.address" style="color:red">{{ form.errors.address }}</p>
-
-            <InputText v-model="form.phone" placeholder="Phone" />
-            <p v-if="form.errors.phone" style="color:red">{{ form.errors.phone }}</p>
-
-            <Button type="submit" :disabled="form.processing">Add</Button>
+        <div class="flex justify-content-between align-items-center mb-4">
+            <span class="text-xl font-bold">{{ branches.length }} Branches</span>
+            <Button @click="openAddForm" icon="pi pi-plus" label="Add Branch" />
         </div>
-    </form>
 
-    <ul class="flex flex-column gap-3">
-        <li v-for="branch in branches" :key="branch.id">
-            <template v-if="editingId === branch.id">
-                <div class="flex flex-column gap-2">
-                    <InputText v-model="editForm.name" />
-                    <InputText v-model="editForm.address" />
-                    <InputText v-model="editForm.phone" />
-                    <div class="flex gap-2">
-                        <Button @click="updateBranch(branch.id)">Save</Button>
-                        <Button @click="cancelEdit()">Cancel</Button>
+        <!-- Creation form -->
+        <Card v-if="showForm" class="mb-4">
+            <template #content>
+                <form @submit.prevent="storeBranch">
+                    <div class="flex flex-column gap-3">
+                        <div>
+                            <label class="text-sm text-gray-600 mb-1 block">Name</label>
+                            <InputText v-model="form.name" placeholder="Enter branch name" class="w-full" />
+                            <p v-if="form.errors.name" style="color:red" class="mt-1">{{ form.errors.name }}</p>
+                        </div>
+                        <div>
+                            <label class="text-sm text-gray-600 mb-1 block">Address</label>
+                            <InputText v-model="form.address" placeholder="Enter address" class="w-full" />
+                            <p v-if="form.errors.address" style="color:red" class="mt-1">{{ form.errors.address }}</p>
+                        </div>
+                        <div>
+                            <label class="text-sm text-gray-600 mb-1 block">Phone</label>
+                            <InputText v-model="form.phone" placeholder="Enter phone" class="w-full" />
+                            <p v-if="form.errors.phone" style="color:red" class="mt-1">{{ form.errors.phone }}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <Button type="submit" :disabled="form.processing">Save</Button>
+                            <Button severity="secondary" @click="showForm = false">Cancel</Button>
+                        </div>
                     </div>
-                </div>
+                </form>
             </template>
-            <template v-else>
-                <div class="flex gap-2 align-items-center">
-                    <span>{{ branch.name }} - {{ branch.address }} - {{ branch.phone }}</span>
-                    <Button @click="startEdit(branch)">Edit</Button>
-                    <Button @click="deleteBranch(branch.id)">Delete</Button>
-                </div>
-            </template>
-        </li>
-    </ul>
+        </Card>
+
+        <!-- List -->
+        <div class="flex flex-column gap-3">
+            <Card v-for="branch in branches" :key="branch.id">
+                <template #content>
+                    <template v-if="editingId === branch.id">
+                        <div class="flex flex-column gap-3">
+                            <InputText v-model="editForm.name" class="w-full" />
+                            <InputText v-model="editForm.address" class="w-full" />
+                            <InputText v-model="editForm.phone" class="w-full" />
+                            <div class="flex gap-2">
+                                <Button @click="updateBranch(branch.id)">Save</Button>
+                                <Button severity="secondary" @click="cancelEdit()">Cancel</Button>
+                            </div>
+                        </div>
+                    </template>
+                    <template v-else>
+                        <div class="flex justify-content-between align-items-center">
+                            <div>
+                                <div class="font-bold text-lg">{{ branch.name }}</div>
+                                <div class="text-gray-500">{{ branch.address }}</div>
+                                <div class="text-gray-500">{{ branch.phone }}</div>
+                            </div>
+                            <div class="flex gap-2">
+                                <Button severity="secondary" @click="startEdit(branch)">Edit</Button>
+                                <Button severity="danger" @click="deleteBranch(branch.id)">Delete</Button>
+                            </div>
+                        </div>
+                    </template>
+                </template>
+            </Card>
+        </div>
+    </AuthenticatedLayout>
 </template>

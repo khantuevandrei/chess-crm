@@ -1,26 +1,29 @@
 <script setup>
-import Header from '../Pages/Components/Dashboard/Header.vue';
-import Sidebar from '../Pages/Components/Sidebar.vue'
+import Header from '../Components/Header.vue';
+import Sidebar from '../Components/Sidebar.vue'
 import { ref } from 'vue';
+
+defineProps({ title: String })
 
 const sidebarOpen = ref(false)
 </script>
 
 <template>
     <div class="flex">
-        <!-- Mobile overlay -->
         <div v-if="sidebarOpen" class="sidebar-overlay" @click="sidebarOpen = false" />
-
         <Sidebar :class="{ 'sidebar-mobile-open': sidebarOpen }" />
 
         <div class="main-content">
-            <div class="flex align-items-center justify-content-between gap-3 mb-3 md:hidden">
+            <div class="flex align-items-center justify-content-end gap-3 mb-3 md:hidden">
                 <button @click="sidebarOpen = !sidebarOpen" class="hamburger">
                     <i class="pi pi-bars" />
                 </button>
             </div>
-            <Header />
-            <slot />
+
+            <div class="max-w-4xl mx-auto">
+                <Header :title="title" />
+                <slot />
+            </div>
         </div>
     </div>
 </template>

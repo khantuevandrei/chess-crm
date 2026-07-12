@@ -20,7 +20,6 @@ const menu = [
 ]
 
 function isActive(url) {
-    if (url === '/dashboard') return page.url === '/' || page.url.startsWith('/dashboard')
     return page.url.startsWith(url)
 }
 </script>

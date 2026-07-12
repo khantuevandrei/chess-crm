@@ -2,6 +2,8 @@
 import { Button } from 'primevue';
 import { usePage } from '@inertiajs/vue3';
 
+defineProps({ title: String })
+
 const page = usePage()
 const user = page.props.auth.user
 </script>
@@ -9,10 +11,9 @@ const user = page.props.auth.user
 <template>
     <div class="flex justify-content-between align-items-center mb-5">
         <div>
-            <h1 class="page-title">Dashboard</h1>
-            <span class="page-subtitle">Welcome back, {{ user?.name || 'Administrator' }}</span>
+            <h1 class="page-title">{{ title }}</h1>
         </div>
-        <div class="flex align-items-center gap-3">
+        <div>
             <Button icon="pi pi-bell" severity="secondary" rounded text />
         </div>
     </div>

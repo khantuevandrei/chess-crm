@@ -1,8 +1,8 @@
 <script setup>
-import StatsGrid from './Components/Dashboard/StatsGrid.vue';
-import RevenueChart from './Components/Dashboard/RevenueChart.vue';
-import TournamentsList from './Components/Dashboard/TournamentsList.vue';
-import QuickActions from './Components/Dashboard/QuickActions.vue';
+import StatsGrid from '../Components/Dashboard/StatsGrid.vue';
+import RevenueChart from '../Components/Dashboard/RevenueChart.vue';
+import TournamentsList from '../Components/Dashboard/TournamentsList.vue';
+import QuickActions from '../Components/Dashboard/QuickActions.vue';
 import AuthenticatedLayout from '../Layouts/AuthenticatedLayout.vue';
 
 defineProps({
@@ -12,7 +12,7 @@ defineProps({
 </script>
 
 <template>
-    <AuthenticatedLayout>
+    <AuthenticatedLayout title="Dashboard">
         <StatsGrid :stats="stats" />
         <div class="grid mt-3">
             <div class="col-12 xl:col-8">
