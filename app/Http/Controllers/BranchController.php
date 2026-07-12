@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Branch;
+use App\Models\Lesson;
+use App\Models\Payment;
+use App\Models\Student;
+use App\Models\Trainer;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -10,8 +14,38 @@ class BranchController extends Controller
 {
     public function index()
     {
+        $studentsThisMonth = Student::whereMonth('created_at', now()->month)->count();
+        $studentsLastMonth = Student::whereMonth('created_at', now()->subMonth()->month)->count();
+        $studentChange = $studentsThisMonth - $studentsLastMonth;
+
+        $trainersThisMonth = Trainer::whereMonth('created_at', now()->month)->count();
+        $trainersLastMonth = Trainer::whereMonth('created_at', now()->subMonth()->month)->count();
+        $trainerChange = $trainersThisMonth - $trainersLastMonth;
+
         return Inertia::render('Branches/Index', [
-            'branches' => Branch::orderBy('name')->get(),
+            'branches' => Branch::withCount(['students', 'trainers', 'lessons'])
+                ->orderBy('name')->get(),
+            'kpi' => [
+                ['title' => 'Total Branches', 'value' => Branch::count(), 'change' => Branch::where('status', 'active')->count() . ' active', 'icon' => 'pi pi-building', 'color' => 'purple', 'positive' => false],
+                ['title' => 'Students', 'value' => Student::count(), 'change' => ($studentChange >= 0 ? '+' : '') . $studentChange . ' this month', 'icon' => 'pi pi-users', 'color' => 'blue', 'positive' => true],
+                ['title' => 'Trainers', 'value' => Trainer::count(), 'change' => ($trainerChange >= 0 ? '+' : '') . $trainerChange . ' this month', 'icon' => 'pi pi-user', 'color' => 'green', 'positive' => true],
+                ['title' => 'Week Lessons', 'value' => Lesson::whereBetween('start_time', [now()->startOfWeek(), now()->endOfWeek()])->count(), 'change' => 'Lessons', 'icon' => 'pi pi-calendar', 'color' => 'orange', 'positive' => false],
+                ['title' => 'Revenue', 'value' => '$' . number_format(Payment::whereMonth('paid_at', now()->month)->sum('amount')), 'change' => 'This month', 'icon' => 'pi pi-wallet', 'color' => 'gold', 'positive' => false],
+            ],
+        ]);
+    }
+
+    public function create()
+    {
+        return Inertia::render('Branches/Create');
+    }
+
+    public function edit(Branch $branch)
+    {
+        $branch->loadCount(['students', 'trainers', 'lessons']);
+
+        return Inertia::render('Branches/Edit', [
+            'branch' => $branch,
         ]);
     }
 
@@ -19,10 +53,21 @@ class BranchController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'type' => 'nullable|in:main,additional,partner',
+            'short_name' => 'nullable|string|max:100',
             'address' => 'required|string|max:255',
+            'city' => 'nullable|string|max:100',
             'phone' => 'required|string|max:20|unique:branches,phone',
+            'opening_date' => 'nullable|date',
+            'code' => 'nullable|string|max:50',
+            'email' => 'nullable|email|max:255',
+            'postal_code' => 'nullable|string|max:20',
+            'website' => 'nullable|url|max:255',
+            'description' => 'nullable|string|max:1000',
+            'capacity' => 'nullable|integer|min:1',
+            'area' => 'nullable|integer|min:1',
+            'status' => 'nullable|in:active,inactive',
         ]);
-
         Branch::create($validated);
 
         return redirect()->route('branches.index')->with('success', 'Branch created.');
@@ -32,10 +77,21 @@ class BranchController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'type' => 'nullable|in:main,additional,partner',
+            'short_name' => 'nullable|string|max:100',
             'address' => 'required|string|max:255',
-            'phone' => 'required|string|max:20|unique:branches,phone,'.$branch->id,
+            'city' => 'nullable|string|max:100',
+            'phone' => 'required|string|max:20|unique:branches,phone,' . $branch->id,
+            'opening_date' => 'nullable|date',
+            'code' => 'nullable|string|max:50',
+            'email' => 'nullable|email|max:255',
+            'postal_code' => 'nullable|string|max:20',
+            'website' => 'nullable|url|max:255',
+            'description' => 'nullable|string|max:1000',
+            'capacity' => 'nullable|integer|min:1',
+            'area' => 'nullable|integer|min:1',
+            'status' => 'nullable|in:active,inactive',
         ]);
-
         $branch->update($validated);
 
         return redirect()->route('branches.index')->with('success', 'Branch updated.');

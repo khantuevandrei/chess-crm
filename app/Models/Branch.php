@@ -6,7 +6,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class Branch extends Model
 {
-    protected $fillable = ['name', 'address', 'phone'];
+    protected $fillable = [
+        'name',
+        'type',
+        'short_name',
+        'address',
+        'city',
+        'phone',
+        'opening_date',
+        'code',
+        'email',
+        'postal_code',
+        'website',
+        'description',
+        'capacity',
+        'area',
+        'status',
+    ];
 
     public function students()
     {
