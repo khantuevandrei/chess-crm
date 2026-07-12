@@ -25,7 +25,7 @@ class BranchController extends Controller
         return Inertia::render('Branches/Index', [
             'branches' => Branch::withCount(['students', 'trainers', 'lessons'])
                 ->orderBy('name')->get(),
-            'kpi' => [
+            'stats' => [
                 ['title' => 'Branches', 'value' => Branch::count(), 'change' => Branch::where('status', 'active')->count() . ' active', 'icon' => 'pi pi-building', 'color' => 'purple', 'positive' => false],
                 ['title' => 'Trainers', 'value' => Trainer::count(), 'change' => ($trainerChange >= 0 ? '+' : '') . $trainerChange . ' this month', 'icon' => 'pi pi-user', 'color' => 'blue', 'positive' => true],
                 ['title' => 'Students', 'value' => Student::count(), 'change' => ($studentChange >= 0 ? '+' : '') . $studentChange . ' this month', 'icon' => 'pi pi-users', 'color' => 'green', 'positive' => true],

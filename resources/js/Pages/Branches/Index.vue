@@ -7,7 +7,7 @@ import StatsGrid from '../../Components/StatsGrid.vue';
 
 const props = defineProps({
     branches: Array,
-    kpi: Array,
+    stats: Array,
 })
 
 const searchQuery = ref('')
@@ -26,8 +26,8 @@ function deleteBranch(id) {
 
 <template>
     <AuthenticatedLayout title="Branches">
-        <!-- KPI Cards -->
-        <StatsGrid :stats="kpi" class="mb-4" />
+        <!-- Stats Cards -->
+        <StatsGrid :stats="stats" class="mb-4" />
 
         <!-- Main Card -->
         <Card>
