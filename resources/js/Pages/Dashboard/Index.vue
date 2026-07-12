@@ -1,9 +1,9 @@
 <script setup>
-import StatsGrid from '../Components/Dashboard/StatsGrid.vue';
-import RevenueChart from '../Components/Dashboard/RevenueChart.vue';
-import TournamentsList from '../Components/Dashboard/TournamentsList.vue';
-import QuickActions from '../Components/Dashboard/QuickActions.vue';
-import AuthenticatedLayout from '../Layouts/AuthenticatedLayout.vue';
+import StatsGrid from '../../Components/StatsGrid.vue';
+import RevenueChart from './Components/RevenueChart.vue';
+import TournamentsList from './Components/TournamentsList.vue';
+import QuickActions from './Components/QuickActions.vue';
+import AuthenticatedLayout from '../../Layouts/AuthenticatedLayout.vue';
 
 defineProps({
     stats: Array,
