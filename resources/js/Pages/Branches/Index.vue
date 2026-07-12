@@ -53,9 +53,14 @@ function deleteBranch(id) {
                             {{ data.address }}, {{ data.city }}
                         </template>
                     </Column>
-                    <Column header="Phone" field="phone" />
                     <Column header="Students" field="students_count" />
                     <Column header="Trainers" field="trainers_count" />
+                    <Column header="Month Lessons" field="lessons_count" />
+                    <Column header="Month Revenue">
+                        <template #body="{ data }">
+                            ${{ data.payments_sum_amount || 0 }}
+                        </template>
+                    </Column>
                     <Column header="Status">
                         <template #body="{ data }">
                             <Tag :value="data.status" :severity="data.status === 'active' ? 'success' : 'secondary'" />
