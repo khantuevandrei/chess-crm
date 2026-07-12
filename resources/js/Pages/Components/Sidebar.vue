@@ -2,6 +2,10 @@
 import { Link, usePage } from '@inertiajs/vue3';
 import { Avatar } from 'primevue';
 
+defineProps({
+    class: String
+})
+
 const page = usePage()
 const user = page.props.auth.user
 
@@ -22,7 +26,7 @@ function isActive(url) {
 </script>
 
 <template>
-    <div class="sidebar">
+    <div class="sidebar" :class="class">
         <div class="sidebar-header">
             <span class="text-xl font-bold">♟ Chess CRM</span>
         </div>
@@ -93,5 +97,14 @@ function isActive(url) {
     border-top: 1px solid #1f2937;
     display: flex;
     align-items: center;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform .3s;
+        z-index: 50;
+        display: flex;
+    }
 }
 </style>

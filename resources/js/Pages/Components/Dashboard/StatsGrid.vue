@@ -8,7 +8,7 @@ defineProps({
 
 <template>
     <div class="grid">
-        <div class="col-12 md:col-6 xl:col-2" v-for="stat in stats" :key="stat.title">
+        <div class="col-6 md:col-4 xl:col-2" v-for="stat in stats" :key="stat.title">
             <Card class="stat-card h-full">
                 <template #content>
                     <div class="flex justify-content-between">
@@ -17,7 +17,7 @@ defineProps({
                             <div class="stat-value">{{ stat.value }}</div>
                             <div class="stat-change" :class="{ positive: stat.positive }">{{ stat.change }}</div>
                         </div>
-                        <Avatar :icon="stat.icon" class="stat-avatar" :class="stat.color" size="xlarge"
+                        <Avatar :icon="stat.icon" class="stat-avatar hidden md:flex" :class="stat.color" size="xlarge"
                             shape="circle" />
                     </div>
                 </template>
