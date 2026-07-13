@@ -138,7 +138,7 @@ function submit() {
 
         <!-- Actions -->
         <div class="flex justify-content-between">
-            <Link href="/branches" class="p-button p-button-secondary no-underline">Cancel</Link>
+            <Link :href="`/branches/${branch.id}`" class="p-button p-button-secondary no-underline">Cancel</Link>
             <Button type="submit" :disabled="form.processing">{{ isEdit ? 'Save Changes' : 'Create Branch' }}</Button>
         </div>
     </form>

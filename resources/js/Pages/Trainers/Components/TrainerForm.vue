@@ -117,7 +117,7 @@ function submit() {
 
         <!-- Action Buttons -->
         <div class="flex justify-content-between">
-            <Link href="/trainers" class="p-button p-button-secondary no-underline">Cancel</Link>
+            <Link :href="`/trainers/${trainer.id}`" class="p-button p-button-secondary no-underline">Cancel</Link>
             <Button type="submit" :disabled="form.processing">
                 {{ isEdit ? 'Save Changes' : 'Create Trainer' }}
             </Button>
