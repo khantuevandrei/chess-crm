@@ -23,6 +23,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/branches', [BranchController::class, 'index'])->name('branches.index');
     Route::get('/branches/create', [BranchController::class, 'create'])->name('branches.create');
+    Route::get('/branches/{branch}', [BranchController::class, 'show'])->name('branches.show');
     Route::post('/branches', [BranchController::class, 'store'])->name('branches.store');
     Route::get('/branches/{branch}/edit', [BranchController::class, 'edit'])->name('branches.edit');
     Route::put('/branches/{branch}', [BranchController::class, 'update'])->name('branches.update');
@@ -57,4 +58,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/tournaments/{tournament}/results/{result}', [TournamentController::class, 'deleteResult'])->name('tournaments.results.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

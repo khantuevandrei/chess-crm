@@ -6,6 +6,7 @@ use App\Models\Branch;
 use App\Models\Payment;
 use App\Models\Student;
 use App\Models\Trainer;
+use App\Models\Lesson;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -46,6 +47,31 @@ class BranchController extends Controller
     public function create()
     {
         return Inertia::render('Branches/Create');
+    }
+
+    public function show(Branch $branch)
+    {
+        $branch->loadCount(['students', 'trainers', 'lessons']);
+
+        $revenue = Payment::whereHas('student', fn($q) => $q->where('branch_id', $branch->id))
+            ->whereMonth('paid_at', now()->month)
+            ->sum('amount');
+
+        $weekLessons = Lesson::where('branch_id', $branch->id)
+            ->whereBetween('start_time', [now()->startOfWeek(), now()->endOfWeek()])
+            ->count();
+
+        return Inertia::render('Branches/Show', [
+            'branch' => $branch,
+            'stats' => [
+                ['title' => 'Students', 'value' => $branch->students_count, 'icon' => 'pi pi-users', 'color' => 'purple'],
+                ['title' => 'Trainers', 'value' => $branch->trainers_count, 'icon' => 'pi pi-user', 'color' => 'blue'],
+                ['title' => 'Week Lessons', 'value' => $weekLessons, 'icon' => 'pi pi-calendar', 'color' => 'green'],
+                ['title' => 'Revenue', 'value' => '$' . number_format($revenue), 'icon' => 'pi pi-wallet', 'color' => 'gold'],
+                ['title' => 'Capacity', 'value' => $branch->capacity ?: 'N/A', 'icon' => 'pi pi-chart-bar', 'color' => 'orange'],
+                ['title' => 'Occupancy', 'value' => $branch->capacity > 0 ? round(($branch->students_count / $branch->capacity) * 100) . '%' : 'N/A', 'icon' => 'pi pi-percentage', 'color' => 'yellow'],
+            ],
+        ]);
     }
 
     public function edit(Branch $branch)
