@@ -13,8 +13,10 @@ class Trainer extends Model
         'phone',
         'specialization',
         'rating',
+        'status',
         'branch_id',
         'bio',
+        'notes',
     ];
 
     public function branch()

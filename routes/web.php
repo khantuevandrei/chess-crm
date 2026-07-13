@@ -31,6 +31,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/trainers', [TrainerController::class, 'index'])->name('trainers.index');
     Route::post('/trainers', [TrainerController::class, 'store'])->name('trainers.store');
+    Route::get('/trainers/create', [TrainerController::class, 'create'])->name('trainers.create');
+    Route::get('/trainers/{trainer}', [TrainerController::class, 'show'])->name('trainers.show');
+    Route::get('/trainers/{trainer}/edit', [TrainerController::class, 'edit'])->name('trainers.edit');
     Route::put('/trainers/{trainer}', [TrainerController::class, 'update'])->name('trainers.update');
     Route::delete('/trainers/{trainer}', [TrainerController::class, 'destroy'])->name('trainers.destroy');
 
@@ -58,4 +61,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/tournaments/{tournament}/results/{result}', [TournamentController::class, 'deleteResult'])->name('tournaments.results.destroy');
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

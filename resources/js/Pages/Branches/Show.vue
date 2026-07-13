@@ -31,6 +31,11 @@ function deleteBranch(id) {
                 </div>
                 <p class="text-gray-500 mt-2" v-if="branch.description">{{ branch.description }}</p>
             </div>
+            <div class="flex gap-2">
+                <Link :href="`/branches/${branch.id}/edit`" class="p-button p-button-secondary no-underline">Edit
+                </Link>
+            </div>
+
         </div>
 
         <!-- KPI Cards -->
@@ -89,11 +94,11 @@ function deleteBranch(id) {
                                 class="no-underline text-color flex align-items-center gap-2 p-2 hover:bg-gray-100 border-round">
                                 <i class="pi pi-pencil" /> Edit Branch
                             </Link>
-                            <Link href="/students/create"
+                            <Link :href="`/students/create?branch_id=${branch.id}`"
                                 class="no-underline text-color flex align-items-center gap-2 p-2 hover:bg-gray-100 border-round">
                                 <i class="pi pi-user-plus" /> Add Student
                             </Link>
-                            <Link href="/lessons/create"
+                            <Link :href="`/lessons/create?branch_id=${branch.id}`"
                                 class="no-underline text-color flex align-items-center gap-2 p-2 hover:bg-gray-100 border-round">
                                 <i class="pi pi-calendar-plus" /> Schedule Lesson
                             </Link>
