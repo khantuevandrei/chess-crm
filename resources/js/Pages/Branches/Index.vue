@@ -44,7 +44,9 @@ function deleteBranch(id) {
                 <DataTable :value="filteredBranches" stripedRows size="small" :paginator="true" :rows="10">
                     <Column header="Name" sortable sortField="name">
                         <template #body="{ data }">
-                            <div class="font-bold">{{ data.name }}</div>
+                            <Link :href="`/branches/${data.id}`" class="font-bold no-underline text-primary">
+                                {{ data.name }}
+                            </Link>
                             <div class="text-xs text-gray-500">{{ data.short_name || data.type }}</div>
                         </template>
                     </Column>
@@ -53,19 +55,19 @@ function deleteBranch(id) {
                             {{ data.address }}, {{ data.city }}
                         </template>
                     </Column>
-                    <Column header="Trainers" field="trainers_count" />
-                    <Column header="Occupancy">
+                    <Column header="Trainers" sortable field="trainers_count" />
+                    <Column header="Occupancy" sortable sortField="students_count">
                         <template #body="{ data }">
                             {{ data.students_count }} / {{ data.capacity || 'N/A' }}
                         </template>
                     </Column>
-                    <Column header="Month Lessons" field="lessons_count" />
-                    <Column header="Month Revenue">
+                    <Column header="Month Lessons" sortable field="lessons_count" />
+                    <Column header="Month Revenue" sortable sortField="revenue">
                         <template #body="{ data }">
-                            ${{ data.payments_sum_amount || 0 }}
+                            ${{ data.revenue || 0 }}
                         </template>
                     </Column>
-                    <Column header="Status">
+                    <Column header="Status" field="status" sortable>
                         <template #body="{ data }">
                             <Tag :value="data.status" :severity="data.status === 'active' ? 'success' : 'secondary'" />
                         </template>
