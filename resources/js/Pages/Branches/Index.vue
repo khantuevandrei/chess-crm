@@ -35,8 +35,11 @@ function deleteBranch(id) {
                 <!-- Toolbar -->
                 <div class="flex justify-content-between align-items-center mb-4">
                     <InputText v-model="searchQuery" placeholder="Search branches..." />
-                    <Link href="/branches/create" class="p-button no-underline">
+                    <Link href="/branches/create" class="p-button no-underline hidden md:inline-flex">
                         <i class="pi pi-plus mr-2" /> Add Branch
+                    </Link>
+                    <Link href="/branches/create" class="p-button p-button-sm no-underline md:hidden">
+                        <i class="pi pi-plus" />
                     </Link>
                 </div>
 
