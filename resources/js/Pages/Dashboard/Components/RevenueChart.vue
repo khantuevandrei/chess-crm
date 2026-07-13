@@ -1,19 +1,23 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { Card, Tag, Divider } from 'primevue';
 import Chart from 'primevue/chart';
 
-const chartData = ref({
-    labels: ['1 Jun', '5 Jun', '10 Jun', '15 Jun', '20 Jun', '25 Jun', '30 Jun'],
+const props = defineProps({
+    revenueData: Array
+})
+
+const chartData = computed(() => ({
+    labels: props.revenueData?.map(d => d.date) || [],
     datasets: [{
         label: 'Revenue',
-        data: [2500, 4200, 6100, 8400, 9800, 11400, 12480],
+        data: props.revenueData?.map(d => d.amount) || [],
         borderColor: '#7c3aed',
         backgroundColor: 'rgba(124,58,237,.12)',
         fill: true,
         tension: .4
     }]
-})
+}))
 
 const chartOptions = ref({
     responsive: true,

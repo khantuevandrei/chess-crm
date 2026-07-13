@@ -7,7 +7,8 @@ import AuthenticatedLayout from '../../Layouts/AuthenticatedLayout.vue';
 
 defineProps({
     stats: Array,
-    tournaments: Array
+    tournaments: Array,
+    revenueData: Array,
 })
 </script>
 
@@ -16,7 +17,7 @@ defineProps({
         <StatsGrid :stats="stats" />
         <div class="grid mt-3">
             <div class="col-12 xl:col-8">
-                <RevenueChart />
+                <RevenueChart :revenueData="revenueData" />
             </div>
             <div class="col-12 xl:col-4">
                 <TournamentsList :tournaments="tournaments" />
