@@ -62,7 +62,8 @@ function deleteTrainer(id) {
                     <template #content>
                         <div class="text-center">
                             <div class="text-sm text-gray-500">Rating</div>
-                            <div class="text-2xl font-bold">{{ trainer.rating || 'N/A' }}</div>
+                            <div class="text-2xl font-bold">{{ trainer.rating ? Number(trainer.rating).toFixed(2) :
+                                'N/A' }}</div>
                         </div>
                     </template>
                 </Card>

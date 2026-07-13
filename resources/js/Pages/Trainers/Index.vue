@@ -57,6 +57,7 @@ function deleteTrainer(id) {
                             </Link>
                         </template>
                     </Column>
+
                     <Column header="Branch" sortable sortField="branch.name">
                         <template #body="{ data }">
                             {{ data.branch?.name || 'N/A' }}
@@ -65,6 +66,11 @@ function deleteTrainer(id) {
                     <Column header="Specialization" field="specialization" sortable />
                     <Column header="Students" field="students_count" sortable />
                     <Column header="Lessons" field="lessons_count" sortable />
+                    <Column header="Rating" sortable sortField="rating">
+                        <template #body="{ data }">
+                            {{ data.rating ? Number(data.rating).toFixed(2) : 'N/A' }}
+                        </template>
+                    </Column>
                     <Column header="Status" sortable sortField="status">
                         <template #body="{ data }">
                             <Tag :value="data.status" :severity="data.status === 'active' ? 'success' : 'secondary'" />
