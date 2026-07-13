@@ -53,8 +53,12 @@ function deleteBranch(id) {
                             {{ data.address }}, {{ data.city }}
                         </template>
                     </Column>
-                    <Column header="Students" field="students_count" />
                     <Column header="Trainers" field="trainers_count" />
+                    <Column header="Occupancy">
+                        <template #body="{ data }">
+                            {{ data.students_count }} / {{ data.capacity || 'N/A' }}
+                        </template>
+                    </Column>
                     <Column header="Month Lessons" field="lessons_count" />
                     <Column header="Month Revenue">
                         <template #body="{ data }">
