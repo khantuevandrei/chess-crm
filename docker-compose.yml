@@ -13,7 +13,7 @@ services:
   webserver:
     image: nginx:alpine
     ports:
-      - "8080:80"
+      - "8081:80"
     volumes:
       - .:/var/www
       - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf
@@ -23,9 +23,9 @@ services:
   db:
     image: postgres:16
     environment:
-      POSTGRES_DB: chess_crm
-      POSTGRES_USER: chess_admin
-      POSTGRES_PASSWORD: chesspass
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - pgdata:/var/lib/postgresql/data
 
