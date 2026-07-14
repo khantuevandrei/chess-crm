@@ -48,6 +48,13 @@ function deletePayment(id) {
 
                 <DataTable :value="filteredPayments" stripedRows size="small" :paginator="true" :rows="10"
                     responsiveLayout="scroll">
+                    <Column header="ID" sortable sortField="id">
+                        <template #body="{ data }">
+                            <Link :href="`/payments/${data.id}`" class="font-bold no-underline text-primary">
+                                #{{ data.id }}
+                            </Link>
+                        </template>
+                    </Column>
                     <Column header="Student" sortable sortField="student.last_name">
                         <template #body="{ data }">
                             {{ data.student?.last_name }} {{ data.student?.first_name }}
