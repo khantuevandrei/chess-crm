@@ -13,12 +13,15 @@ class StudentController extends Controller
 {
     public function index()
     {
-        $studentsThisMonth = Student::whereMonth('created_at', now()->month)->count();
-        $studentsLastMonth = Student::whereMonth('created_at', now()->subMonth()->month)->count();
+        $thisMonth = [now()->startOfMonth(), now()->endOfMonth()];
+        $lastMonth = [now()->subMonthNoOverflow()->startOfMonth(), now()->subMonthNoOverflow()->endOfMonth()];
+
+        $studentsThisMonth = Student::whereBetween('created_at', $thisMonth)->count();
+        $studentsLastMonth = Student::whereBetween('created_at', $lastMonth)->count();
         $studentChange = $studentsThisMonth - $studentsLastMonth;
 
-        $paidThisMonth = Payment::whereMonth('paid_at', now()->month)->sum('amount');
-        $paidLastMonth = Payment::whereMonth('paid_at', now()->subMonth()->month)->sum('amount');
+        $paidThisMonth = Payment::whereBetween('paid_at', $thisMonth)->sum('amount');
+        $paidLastMonth = Payment::whereBetween('paid_at', $lastMonth)->sum('amount');
         $paidChange = $paidLastMonth > 0 ? round((($paidThisMonth - $paidLastMonth) / $paidLastMonth) * 100) : 0;
 
         $averageCheck = Student::count() > 0 ? $paidThisMonth / Student::count() : 0;
@@ -29,16 +32,15 @@ class StudentController extends Controller
             'branches' => Branch::orderBy('name')->get(),
             'trainers' => Trainer::orderBy('last_name')->get(),
             'stats' => [
-                ['title' => 'Total Students', 'value' => Student::count(), 'change' => ($studentChange >= 0 ? '+' : '').$studentChange.' this month', 'icon' => 'pi pi-users', 'color' => 'purple', 'positive' => true],
-                ['title' => 'Active', 'value' => Student::where('status', 'active')->count(), 'change' => round((Student::where('status', 'active')->count() / max(Student::count(), 1)) * 100).'% of total', 'icon' => 'pi pi-check-circle', 'color' => 'green', 'positive' => false],
-                ['title' => 'New This Month', 'value' => $studentsThisMonth, 'change' => '+'.Student::whereMonth('created_at', now()->subMonth()->month)->count().' last month', 'icon' => 'pi pi-plus-circle', 'color' => 'blue', 'positive' => true],
+                ['title' => 'Total Students', 'value' => Student::count(), 'change' => ($studentChange >= 0 ? '+' : '') . $studentChange . ' this month', 'icon' => 'pi pi-users', 'color' => 'purple', 'positive' => true],
+                ['title' => 'Active', 'value' => Student::where('status', 'active')->count(), 'change' => round((Student::where('status', 'active')->count() / max(Student::count(), 1)) * 100) . '% of total', 'icon' => 'pi pi-check-circle', 'color' => 'green', 'positive' => false],
+                ['title' => 'New This Month', 'value' => $studentsThisMonth, 'change' => '+' . $studentsLastMonth . ' last month', 'icon' => 'pi pi-plus-circle', 'color' => 'blue', 'positive' => true],
                 ['title' => 'Active Groups', 'value' => 'N/A', 'change' => 'Groups feature coming soon', 'icon' => 'pi pi-users', 'color' => 'orange', 'positive' => false],
-                ['title' => 'Average Check', 'value' => '$'.number_format($averageCheck, 2), 'change' => 'Per student this month', 'icon' => 'pi pi-wallet', 'color' => 'gold', 'positive' => false],
-                ['title' => 'Paid This Month', 'value' => '$'.number_format($paidThisMonth), 'change' => ($paidChange >= 0 ? '+' : '').$paidChange.'% vs last month', 'icon' => 'pi pi-wallet', 'color' => 'gold', 'positive' => true],
+                ['title' => 'Average Check', 'value' => '$' . number_format($averageCheck, 2), 'change' => 'Per student this month', 'icon' => 'pi pi-wallet', 'color' => 'gold', 'positive' => false],
+                ['title' => 'Paid This Month', 'value' => '$' . number_format($paidThisMonth), 'change' => ($paidChange >= 0 ? '+' : '') . $paidChange . '% vs last month', 'icon' => 'pi pi-wallet', 'color' => 'gold', 'positive' => true],
             ],
         ]);
     }
-
     public function show(Student $student)
     {
         $student->load(['branch', 'trainers', 'payments']);
@@ -76,17 +78,16 @@ class StudentController extends Controller
             'fide_rating' => 'nullable|integer',
             'local_rating' => 'nullable|integer',
             'rank' => 'string|max:20|nullable',
-            'parent_name' => 'required|string|max:20',
+            'parent_name' => 'required|string|max:100',
             'parent_phone' => 'required|string|max:20',
             'branch_id' => 'required|exists:branches,id',
             'status' => 'nullable|in:active,inactive',
+            'trainer_ids' => 'nullable|array',
+            'trainer_ids.*' => 'integer|exists:trainers,id',
         ]);
 
         $student = Student::create($validated);
-
-        if ($request->has('trainer_ids')) {
-            $student->trainers()->sync($request->trainer_ids);
-        }
+        $student->trainers()->sync($validated['trainer_ids'] ?? []);
 
         return redirect()->route('students.index')->with('success', 'Student created');
     }
@@ -100,14 +101,16 @@ class StudentController extends Controller
             'fide_rating' => 'nullable|integer',
             'local_rating' => 'nullable|integer',
             'rank' => 'string|max:20|nullable',
-            'parent_name' => 'required|string|max:20',
+            'parent_name' => 'required|string|max:100',
             'parent_phone' => 'required|string|max:20',
             'branch_id' => 'required|exists:branches,id',
             'status' => 'nullable|in:active,inactive',
+            'trainer_ids' => 'nullable|array',
+            'trainer_ids.*' => 'integer|exists:trainers,id',
         ]);
 
         $student->update($validated);
-        $student->trainers()->sync($request->trainer_ids ?? []);
+        $student->trainers()->sync($validated['trainer_ids'] ?? []);
 
         return redirect()->route('students.index')->with('success', 'Student updated');
     }

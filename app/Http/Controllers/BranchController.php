@@ -14,33 +14,35 @@ class BranchController extends Controller
 {
     public function index()
     {
-        $studentsThisMonth = Student::whereMonth('created_at', now()->month)->count();
-        $studentsLastMonth = Student::whereMonth('created_at', now()->subMonth()->month)->count();
+        $thisMonth = [now()->startOfMonth(), now()->endOfMonth()];
+        $lastMonth = [now()->subMonthNoOverflow()->startOfMonth(), now()->subMonthNoOverflow()->endOfMonth()];
+
+        $studentsThisMonth = Student::whereBetween('created_at', $thisMonth)->count();
+        $studentsLastMonth = Student::whereBetween('created_at', $lastMonth)->count();
         $studentChange = $studentsThisMonth - $studentsLastMonth;
 
-        $trainersThisMonth = Trainer::whereMonth('created_at', now()->month)->count();
-        $trainersLastMonth = Trainer::whereMonth('created_at', now()->subMonth()->month)->count();
+        $trainersThisMonth = Trainer::whereBetween('created_at', $thisMonth)->count();
+        $trainersLastMonth = Trainer::whereBetween('created_at', $lastMonth)->count();
         $trainerChange = $trainersThisMonth - $trainersLastMonth;
-
         return Inertia::render('Branches/Index', [
             'branches' => Branch::withCount(['students', 'trainers'])
-                ->withCount(['lessons' => fn ($q) => $q->whereMonth('start_time', now()->month)])
+                ->withCount(['lessons' => fn($q) => $q->whereBetween('start_time', $thisMonth)])
                 ->orderBy('name')
                 ->get()
-                ->map(function ($branch) {
-                    $branch->revenue = Payment::whereHas('student', fn ($q) => $q->where('branch_id', $branch->id))
-                        ->whereMonth('paid_at', now()->month)
+                ->map(function ($branch) use ($thisMonth) {
+                    $branch->revenue = Payment::whereHas('student', fn($q) => $q->where('branch_id', $branch->id))
+                        ->whereBetween('paid_at', $thisMonth)
                         ->sum('amount');
 
                     return $branch;
                 }),
             'stats' => [
-                ['title' => 'Branches', 'value' => Branch::count(), 'change' => Branch::where('status', 'active')->count().' active', 'icon' => 'pi pi-building', 'color' => 'purple', 'positive' => false],
-                ['title' => 'Students', 'value' => Student::count(), 'change' => ($studentChange >= 0 ? '+' : '').$studentChange.' this month', 'icon' => 'pi pi-users', 'color' => 'blue', 'positive' => true],
-                ['title' => 'Trainers', 'value' => Trainer::count(), 'change' => ($trainerChange >= 0 ? '+' : '').$trainerChange.' this month', 'icon' => 'pi pi-user', 'color' => 'green', 'positive' => true],
+                ['title' => 'Branches', 'value' => Branch::count(), 'change' => Branch::where('status', 'active')->count() . ' active', 'icon' => 'pi pi-building', 'color' => 'purple', 'positive' => false],
+                ['title' => 'Students', 'value' => Student::count(), 'change' => ($studentChange >= 0 ? '+' : '') . $studentChange . ' this month', 'icon' => 'pi pi-users', 'color' => 'blue', 'positive' => true],
+                ['title' => 'Trainers', 'value' => Trainer::count(), 'change' => ($trainerChange >= 0 ? '+' : '') . $trainerChange . ' this month', 'icon' => 'pi pi-user', 'color' => 'green', 'positive' => true],
                 ['title' => 'Total Capacity', 'value' => Branch::sum('capacity'), 'change' => 'Students limit', 'icon' => 'pi pi-chart-bar', 'color' => 'orange', 'positive' => false],
-                ['title' => 'Occupancy Rate', 'value' => Branch::sum('capacity') > 0 ? round((Student::count() / Branch::sum('capacity')) * 100).'%' : 'N/A', 'change' => 'Students / Capacity', 'icon' => 'pi pi-percentage', 'color' => 'yellow', 'positive' => false],
-                ['title' => 'Revenue', 'value' => '$'.number_format(Payment::whereMonth('paid_at', now()->month)->sum('amount')), 'change' => 'This month', 'icon' => 'pi pi-wallet', 'color' => 'gold', 'positive' => false],
+                ['title' => 'Occupancy Rate', 'value' => Branch::sum('capacity') > 0 ? round((Student::count() / Branch::sum('capacity')) * 100) . '%' : 'N/A', 'change' => 'Students / Capacity', 'icon' => 'pi pi-percentage', 'color' => 'yellow', 'positive' => false],
+                ['title' => 'Revenue', 'value' => '$' . number_format(Payment::whereBetween('paid_at', $thisMonth)->sum('amount')), 'change' => 'This month', 'icon' => 'pi pi-wallet', 'color' => 'gold', 'positive' => false],
             ],
         ]);
     }
@@ -54,8 +56,8 @@ class BranchController extends Controller
     {
         $branch->loadCount(['students', 'trainers', 'lessons']);
 
-        $revenue = Payment::whereHas('student', fn ($q) => $q->where('branch_id', $branch->id))
-            ->whereMonth('paid_at', now()->month)
+        $revenue = Payment::whereHas('student', fn($q) => $q->where('branch_id', $branch->id))
+            ->whereBetween('paid_at', [now()->startOfMonth(), now()->endOfMonth()])
             ->sum('amount');
 
         $weekLessons = Lesson::where('branch_id', $branch->id)
@@ -68,9 +70,9 @@ class BranchController extends Controller
                 ['title' => 'Students', 'value' => $branch->students_count, 'icon' => 'pi pi-users', 'color' => 'purple'],
                 ['title' => 'Trainers', 'value' => $branch->trainers_count, 'icon' => 'pi pi-user', 'color' => 'blue'],
                 ['title' => 'Week Lessons', 'value' => $weekLessons, 'icon' => 'pi pi-calendar', 'color' => 'green'],
-                ['title' => 'Revenue', 'value' => '$'.number_format($revenue), 'icon' => 'pi pi-wallet', 'color' => 'gold'],
+                ['title' => 'Revenue', 'value' => '$' . number_format($revenue), 'icon' => 'pi pi-wallet', 'color' => 'gold'],
                 ['title' => 'Capacity', 'value' => $branch->capacity ?: 'N/A', 'icon' => 'pi pi-chart-bar', 'color' => 'orange'],
-                ['title' => 'Occupancy', 'value' => $branch->capacity > 0 ? round(($branch->students_count / $branch->capacity) * 100).'%' : 'N/A', 'icon' => 'pi pi-percentage', 'color' => 'yellow'],
+                ['title' => 'Occupancy', 'value' => $branch->capacity > 0 ? round(($branch->students_count / $branch->capacity) * 100) . '%' : 'N/A', 'icon' => 'pi pi-percentage', 'color' => 'yellow'],
             ],
         ]);
     }
@@ -78,7 +80,6 @@ class BranchController extends Controller
     public function edit(Branch $branch)
     {
         $branch->loadCount(['students', 'trainers', 'lessons']);
-
         return Inertia::render('Branches/Edit', [
             'branch' => $branch,
         ]);
@@ -116,7 +117,7 @@ class BranchController extends Controller
             'short_name' => 'nullable|string|max:100',
             'address' => 'required|string|max:255',
             'city' => 'nullable|string|max:100',
-            'phone' => 'required|string|max:20|unique:branches,phone,'.$branch->id,
+            'phone' => 'required|string|max:20|unique:branches,phone,' . $branch->id,
             'opening_date' => 'nullable|date',
             'code' => 'nullable|string|max:50',
             'email' => 'nullable|email|max:255',

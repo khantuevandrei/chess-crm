@@ -19,7 +19,9 @@ class LessonController extends Controller
             ->where('end_time', '>=', $now)
             ->count();
         $weekLessons = Lesson::whereBetween('start_time', [$now->startOfWeek(), $now->endOfWeek()])->count();
-        $cancelledLessons = Lesson::where('status', 'cancelled')->whereMonth('start_time', $now->month)->count();
+        $cancelledLessons = Lesson::where('status', 'cancelled')
+            ->whereBetween('start_time', [now()->startOfMonth(), now()->endOfMonth()])
+            ->count();
 
         return Inertia::render('Lessons/Index', [
             'lessons' => Lesson::with(['trainer', 'student', 'branch'])

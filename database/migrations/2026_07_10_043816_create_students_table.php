@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('rank')->nullable();
             $table->string('parent_name');
             $table->string('parent_phone');
-            $table->foreignId('branch_id')->constrained()->nullOnDelete();
+            $table->foreignId('branch_id')->constrained()->restrictOnDelete();
             $table->timestamps();
         });
     }

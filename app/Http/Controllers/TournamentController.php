@@ -22,9 +22,9 @@ class TournamentController extends Controller
             'tournaments' => Tournament::withCount('tournamentResults')
                 ->orderBy('start_date', 'desc')->get(),
             'stats' => [
-                ['title' => 'Total', 'value' => $total, 'change' => $thisYear.' this year', 'icon' => 'pi pi-trophy', 'color' => 'purple', 'positive' => false],
+                ['title' => 'Total', 'value' => $total, 'change' => $thisYear . ' this year', 'icon' => 'pi pi-trophy', 'color' => 'purple', 'positive' => false],
                 ['title' => 'Upcoming', 'value' => $upcoming, 'change' => 'Scheduled', 'icon' => 'pi pi-calendar', 'color' => 'blue', 'positive' => false],
-                ['title' => 'Completed', 'value' => $completed, 'change' => round(($completed / max($total, 1)) * 100).'% of total', 'icon' => 'pi pi-check-circle', 'color' => 'green', 'positive' => false],
+                ['title' => 'Completed', 'value' => $completed, 'change' => round(($completed / max($total, 1)) * 100) . '% of total', 'icon' => 'pi pi-check-circle', 'color' => 'green', 'positive' => false],
                 ['title' => 'Participants', 'value' => TournamentResult::count(), 'change' => 'Total results', 'icon' => 'pi pi-users', 'color' => 'orange', 'positive' => false],
                 ['title' => 'Avg Participants', 'value' => $total > 0 ? round(TournamentResult::count() / $total) : 'N/A', 'change' => 'Per tournament', 'icon' => 'pi pi-chart-bar', 'color' => 'yellow', 'positive' => false],
             ],
@@ -47,9 +47,9 @@ class TournamentController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:100',
-            'location' => 'required|string|max:20',
+            'location' => 'required|string|max:100',
             'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
+            'end_date' => 'required|date|after_or_equal:start_date',
             'type' => 'required|string|max:20',
             'status' => 'nullable|in:upcoming,active,completed,cancelled',
         ]);
@@ -63,9 +63,9 @@ class TournamentController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:100',
-            'location' => 'required|string|max:20',
+            'location' => 'required|string|max:100',
             'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
+            'end_date' => 'required|date|after_or_equal:start_date',
             'type' => 'required|string|max:20',
             'status' => 'nullable|in:upcoming,active,completed,cancelled',
         ]);
@@ -104,9 +104,9 @@ class TournamentController extends Controller
         return back()->with('success', 'Result added.');
     }
 
-    public function deleteResult(Tournament $tournament, TournamentResult $result)
+    public function deleteResult(Tournament $tournament, TournamentResult $tournamentResult)
     {
-        $result->delete();
+        $tournamentResult->delete();
 
         return back()->with('success', 'Result deleted.');
     }

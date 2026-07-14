@@ -69,7 +69,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/tournaments/{tournament}', [TournamentController::class, 'update'])->name('tournaments.update');
     Route::delete('/tournaments/{tournament}', [TournamentController::class, 'destroy'])->name('tournaments.destroy');
     Route::post('/tournaments/{tournament}/results', [TournamentController::class, 'addResult'])->name('tournaments.results.store');
-    Route::delete('/tournaments/{tournament}/results/{result}', [TournamentController::class, 'deleteResult'])->name('tournaments.results.destroy');
+    Route::delete('/tournaments/{tournament}/results/{tournamentResult}', [TournamentController::class, 'deleteResult'])
+        ->name('tournaments.results.destroy')
+        ->scopeBindings();
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
