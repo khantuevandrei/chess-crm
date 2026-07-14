@@ -25,7 +25,7 @@ import { Link } from '@inertiajs/vue3';
         <div class="col-12 lg:col-4">
             <Card class="action-card h-full">
                 <template #content>
-                    <Link href="/students" class="no-underline">
+                    <Link href="/students/create" class="no-underline">
                         <div class="flex align-items-center gap-4">
                             <Avatar icon="pi pi-user-plus" class="action-avatar green" shape="circle" size="xlarge" />
                             <div class="flex-1">
@@ -41,7 +41,7 @@ import { Link } from '@inertiajs/vue3';
         <div class="col-12 lg:col-4">
             <Card class="action-card h-full">
                 <template #content>
-                    <Link href="/tournaments" class="no-underline">
+                    <Link href="/tournaments/create" class="no-underline">
                         <div class="flex align-items-center gap-4">
                             <Avatar icon="pi pi-trophy" class="action-avatar gold" shape="circle" size="xlarge" />
                             <div class="flex-1">

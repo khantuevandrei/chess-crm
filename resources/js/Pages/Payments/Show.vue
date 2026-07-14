@@ -50,6 +50,21 @@ function deletePayment(id) {
                 </Card>
             </div>
             <div class="col-12 md:col-4">
+                <Card class="mb-4">
+                    <template #title>Quick Actions</template>
+                    <template #content>
+                        <div class="flex flex-column gap-2">
+                            <Link :href="`/payments/${payment.id}/edit`"
+                                class="no-underline text-color flex align-items-center gap-2 p-2 hover:bg-gray-100 border-round">
+                                <i class="pi pi-pencil" /> Edit Payment
+                            </Link>
+                            <Link :href="`/students/${payment.student_id}`"
+                                class="no-underline text-color flex align-items-center gap-2 p-2 hover:bg-gray-100 border-round">
+                                <i class="pi pi-user" /> View Student
+                            </Link>
+                        </div>
+                    </template>
+                </Card>
                 <Card class="border-red-200" style="border: 1px solid #fecaca; background: #fef2f2;">
                     <template #title><span style="color: #dc2626;">Danger Zone</span></template>
                     <template #content>
