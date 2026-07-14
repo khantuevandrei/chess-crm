@@ -30,7 +30,7 @@ function deleteTrainer(id) {
 
 <template>
     <AuthenticatedLayout title="Trainers">
-        <!-- KPI Cards -->
+        <!-- Stats Cards -->
         <StatsGrid :stats="stats" class="mb-4" />
 
         <!-- Main Card -->
@@ -48,8 +48,7 @@ function deleteTrainer(id) {
                 </div>
 
                 <!-- Table -->
-                <DataTable :value="filteredTrainers" stripedRows size="small" :paginator="true" :rows="10"
-                    responsiveLayout="scroll">
+                <DataTable :value="filteredTrainers" stripedRows size="small" :paginator="true" :rows="10">
                     <Column header="Name" sortable sortField="last_name">
                         <template #body="{ data }">
                             <Link :href="`/trainers/${data.id}`" class="font-bold no-underline text-primary">
@@ -57,7 +56,6 @@ function deleteTrainer(id) {
                             </Link>
                         </template>
                     </Column>
-
                     <Column header="Branch" sortable sortField="branch.name">
                         <template #body="{ data }">
                             {{ data.branch?.name || 'N/A' }}

@@ -1,170 +1,95 @@
 <script setup>
-import { useForm, router } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { Link, router } from '@inertiajs/vue3';
+import { ref, computed } from 'vue';
+import { InputText, Button, Card, DataTable, Column, Tag } from 'primevue';
+import StatsGrid from '@/Components/StatsGrid.vue';
 
 const props = defineProps({
     students: Array,
     branches: Array,
     trainers: Array,
-    success: String
+    stats: Array
 })
 
-const form = useForm({
-    first_name: '',
-    last_name: '',
-    birth_date: '',
-    fide_rating: '',
-    local_rating: '',
-    rank: '',
-    parent_name: '',
-    parent_phone: '',
-    branch_id: '',
-    trainer_ids: []
+const searchQuery = ref('')
+
+const filteredStudents = computed(() => {
+    if (!searchQuery.value) return props.students
+    const q = searchQuery.value.toLocaleLowerCase()
+    return props.students.filter(t =>
+        t.first_name.toLocaleLowerCase().includes(q) ||
+        t.last_name.toLocaleLowerCase().includes(q)
+    )
 })
-
-const editingId = ref(null)
-const editForm = useForm({
-    first_name: '',
-    last_name: '',
-    birth_date: '',
-    fide_rating: '',
-    local_rating: '',
-    rank: '',
-    parent_name: '',
-    parent_phone: '',
-    branch_id: '',
-    trainer_ids: []
-})
-
-function startEdit(student) {
-    editingId.value = student.id
-    editForm.first_name = student.first_name
-    editForm.last_name = student.last_name
-    editForm.birth_date = student.birth_date
-    editForm.fide_rating = student.fide_rating
-    editForm.local_rating = student.local_rating
-    editForm.rank = student.rank
-    editForm.parent_name = student.parent_name
-    editForm.parent_phone = student.parent_phone
-    editForm.branch_id = student.branch_id
-    console.log('student:', student)
-    console.log('trainers:', student.trainers)
-    editForm.trainer_ids = student.trainers.map(t => t.id) || []
-}
-
-function cancelEdit(id) {
-    editingId.value = null
-}
-
-function updateStudent(id) {
-    editForm.put(`/students/${id}`, {
-        onSuccess: () => editingId.value = null
-    })
-}
 
 function deleteStudent(id) {
-    if (confirm('Delete student?')) {
+    if (confirm('Delete this student?')) {
         router.delete(`/students/${id}`)
     }
 }
 </script>
 
+
 <template>
-    <h1>Students</h1>
+    <AuthenticatedLayout title="Students">
+        <!-- Stats Cards-->
+        <StatsGrid :stats="stats" class="mb-4" />
 
-    <p v-if="$page.props.success" style="color:green">
-        {{ $page.props.success }}
-    </p>
+        <!-- Main Card -->
+        <Card>
+            <template #content>
+                <!-- Toolbar -->
+                <div class="flex justify-content-between align-items-center mb-4">
+                    <InputText v-model="searchQuery" placeholder="Search students..." />
+                    <Link href="/students/create" class="p-button no-underline hidden md:inline-flex">
+                        <i class="pi pi-plus mr-2" /> Add Student
+                    </Link>
+                    <Link href="/students/create" class="p-button p-button-sm no-underline md:hidden">
+                        <i class="pi pi-plus" />
+                    </Link>
+                </div>
 
-    <form @submit.prevent="form.post('/students', {
-        onSuccess: () => form.reset()
-    })">
-        <input v-model="form.first_name" placeholder="First name" />
-        <p v-if="form.errors.first_name" style="color:red">{{ form.errors.first_name }}</p>
-
-        <input v-model="form.last_name" placeholder="Last name" />
-        <p v-if="form.errors.last_name" style="color:red">{{ form.errors.last_name }}</p>
-
-        <input type="date" v-model="form.birth_date" placeholder="Birth date" />
-        <p v-if="form.errors.birth_date" style="color:red">{{ form.errors.birth_date }}</p>
-
-        <input v-model="form.fide_rating" placeholder="Fide rating" />
-        <p v-if="form.errors.fide_rating" style="color:red">{{ form.errors.fide_rating }}</p>
-
-        <input v-model="form.local_rating" placeholder="Local rating" />
-        <p v-if="form.errors.local_rating" style="color:red">{{ form.errors.local_rating }}</p>
-
-        <input v-model="form.rank" placeholder="Rank" />
-        <p v-if="form.errors.rank" style="color:red">{{ form.errors.rank }}</p>
-
-        <input v-model="form.parent_name" placeholder="Parent name" />
-        <p v-if="form.errors.parent_name" style="color:red">{{ form.errors.parent_name }}</p>
-
-        <input v-model="form.parent_phone" placeholder="Parent phone" />
-        <p v-if="form.errors.parent_phone" style="color:red">{{ form.errors.parent_phone }}</p>
-
-        <select v-model="form.branch_id">
-            <option v-for="branch in branches" :key="branch.id" :value="branch.id">
-                {{ branch.name }}
-            </option>
-        </select>
-
-        <select v-model="form.trainer_ids" multiple>
-            <option v-for="trainer in trainers" :key="trainer.id" :value="trainer.id">
-                {{ trainer.last_name }} {{ trainer.first_name }}
-            </option>
-        </select>
-
-        <button type="submit" :disabled="form.processing">Add</button>
-    </form>
-
-    <ul>
-        <li v-for="student in students" :key="student.id">
-            <template v-if="editingId === student.id">
-                <input v-model="editForm.first_name">
-                <p v-if="editForm.errors.first_name" style="color:red">{{ editForm.errors.first_name }}</p>
-
-                <input v-model="editForm.last_name">
-                <p v-if="editForm.errors.last_name" style="color:red">{{ editForm.errors.last_name }}</p>
-
-                <input type="date" v-model="editForm.birth_date">
-                <p v-if="editForm.errors.birth_date" style="color:red">{{ editForm.errors.birth_date }}</p>
-
-                <input v-model="editForm.fide_rating">
-                <p v-if="editForm.errors.fide_rating" style="color:red">{{ editForm.errors.fide_rating }}</p>
-
-                <input v-model="editForm.local_rating">
-                <p v-if="editForm.errors.local_rating" style="color:red">{{ editForm.errors.local_rating }}</p>
-
-                <input v-model="editForm.rank">
-                <p v-if="editForm.errors.rank" style="color:red">{{ editForm.errors.rank }}</p>
-
-                <input v-model="editForm.parent_name">
-                <p v-if="editForm.errors.parent_name" style="color:red">{{ editForm.errors.parent_name }}</p>
-
-                <input v-model="editForm.parent_phone">
-                <p v-if="editForm.errors.parent_phone" style="color:red">{{ editForm.errors.parent_phone }}</p>
-
-                <select v-model="editForm.branch_id">
-                    <option v-for="branch in branches" :key="branch.id" :value="branch.id">
-                        {{ branch.name }}
-                    </option>
-                </select>
-
-                <select v-model="editForm.trainer_ids" multiple>
-                    <option v-for="trainer in trainers" :key="trainer.id" :value="trainer.id">
-                        {{ trainer.last_name }} {{ trainer.first_name }}
-                    </option>
-                </select>
-
-                <button @click="updateStudent(student.id)">Save</button>
-                <button @click="cancelEdit()">Cancel</button>
+                <!-- Table -->
+                <DataTable :value="filteredStudents" stripedRows size="small" :paginator="true" :rows="10">
+                    <Column header="Name" sortable sort-field="last_name">
+                        <template #body="{ data }">
+                            <Link :href="`/students/${data.id}`" class="font-bold no-underline text-primary">
+                                {{ data.last_name }} {{ data.first_name }}
+                            </Link>
+                        </template>
+                    </Column>
+                    <Column header="Birth Date" field="birth_date" sortable />
+                    <Column header="Branch" sortable sort-field="branch.name">
+                        <template #body="{ data }">
+                            {{ data.branch?.name || 'N/A' }}
+                        </template>
+                    </Column>
+                    <Column header="Trainer" sortable sort-field="trainers.last_name">
+                        <template #body="{ data }">
+                            {{ data.trainers?.[0]?.last_name + ' ' + data.trainers?.[0]?.first_name || 'N/A' }}
+                        </template>
+                    </Column>
+                    <Column header="Fide Rating" field="fide_rating" sortable />
+                    <Column header="Status" sortable sort-field="status">
+                        <template #body="{ data }">
+                            <Tag :value="data.status" :severity="data.status === 'active' ? 'success' : 'secondary'" />
+                        </template>
+                    </Column>
+                    <Column header="Actions">
+                        <template #body="{ data }">
+                            <div class="flex gap-1">
+                                <Link :href="`/students/${data.id}/edit`"
+                                    class="p-button p-button-sm p-button-secondary no-underline">
+                                    <i class="pi pi-pencil" />
+                                </Link>
+                                <Button icon="pi pi-trash" severity="danger" size="small"
+                                    @click="deleteStudent(data.id)" />
+                            </div>
+                        </template>
+                    </Column>
+                </DataTable>
             </template>
-            <template v-else>
-                {{ student.first_name }} {{ student.last_name }}
-                <button @click="startEdit(student)">Edit</button>
-                <button @click="deleteStudent(student.id)">Delete</button>
-            </template>
-        </li>
-    </ul>
+        </Card>
+    </AuthenticatedLayout>
 </template>
