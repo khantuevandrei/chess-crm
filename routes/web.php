@@ -74,4 +74,4 @@ Route::middleware('auth')->group(function () {
         ->scopeBindings();
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

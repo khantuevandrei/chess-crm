@@ -22,9 +22,9 @@ class TournamentController extends Controller
             'tournaments' => Tournament::withCount('tournamentResults')
                 ->orderBy('start_date', 'desc')->get(),
             'stats' => [
-                ['title' => 'Total', 'value' => $total, 'change' => $thisYear . ' this year', 'icon' => 'pi pi-trophy', 'color' => 'purple', 'positive' => false],
+                ['title' => 'Total', 'value' => $total, 'change' => $thisYear.' this year', 'icon' => 'pi pi-trophy', 'color' => 'purple', 'positive' => false],
                 ['title' => 'Upcoming', 'value' => $upcoming, 'change' => 'Scheduled', 'icon' => 'pi pi-calendar', 'color' => 'blue', 'positive' => false],
-                ['title' => 'Completed', 'value' => $completed, 'change' => round(($completed / max($total, 1)) * 100) . '% of total', 'icon' => 'pi pi-check-circle', 'color' => 'green', 'positive' => false],
+                ['title' => 'Completed', 'value' => $completed, 'change' => round(($completed / max($total, 1)) * 100).'% of total', 'icon' => 'pi pi-check-circle', 'color' => 'green', 'positive' => false],
                 ['title' => 'Participants', 'value' => TournamentResult::count(), 'change' => 'Total results', 'icon' => 'pi pi-users', 'color' => 'orange', 'positive' => false],
                 ['title' => 'Avg Participants', 'value' => $total > 0 ? round(TournamentResult::count() / $total) : 'N/A', 'change' => 'Per tournament', 'icon' => 'pi pi-chart-bar', 'color' => 'yellow', 'positive' => false],
             ],

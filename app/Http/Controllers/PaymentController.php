@@ -28,12 +28,12 @@ class PaymentController extends Controller
             'payments' => Payment::with('student')->orderBy('paid_at', 'desc')->get(),
             'students' => Student::orderBy('last_name')->get(),
             'stats' => [
-                ['title' => 'Monthly Revenue', 'value' => '$' . number_format($monthRevenue), 'change' => ($revenueChange >= 0 ? '+' : '') . $revenueChange . '% vs last month', 'icon' => 'pi pi-wallet', 'color' => 'purple', 'positive' => $revenueChange >= 0],
-                ['title' => 'Today', 'value' => '$' . number_format($todayRevenue), 'change' => 'Received today', 'icon' => 'pi pi-calendar', 'color' => 'blue', 'positive' => false],
+                ['title' => 'Monthly Revenue', 'value' => '$'.number_format($monthRevenue), 'change' => ($revenueChange >= 0 ? '+' : '').$revenueChange.'% vs last month', 'icon' => 'pi pi-wallet', 'color' => 'purple', 'positive' => $revenueChange >= 0],
+                ['title' => 'Today', 'value' => '$'.number_format($todayRevenue), 'change' => 'Received today', 'icon' => 'pi pi-calendar', 'color' => 'blue', 'positive' => false],
                 ['title' => 'Pending', 'value' => $pending, 'change' => 'Awaiting payment', 'icon' => 'pi pi-clock', 'color' => 'orange', 'positive' => false],
                 ['title' => 'Overdue', 'value' => $overdue, 'change' => 'Requires attention', 'icon' => 'pi pi-exclamation-triangle', 'color' => 'red', 'positive' => false],
                 ['title' => 'Ending Soon', 'value' => '24', 'change' => 'Within 7 days', 'icon' => 'pi pi-hourglass', 'color' => 'yellow', 'positive' => false],
-                ['title' => 'Avg Check', 'value' => '$' . number_format($avgCheck, 2), 'change' => 'Per paying student', 'icon' => 'pi pi-chart-bar', 'color' => 'green', 'positive' => false],
+                ['title' => 'Avg Check', 'value' => '$'.number_format($avgCheck, 2), 'change' => 'Per paying student', 'icon' => 'pi pi-chart-bar', 'color' => 'green', 'positive' => false],
             ],
         ]);
     }
@@ -72,6 +72,7 @@ class PaymentController extends Controller
         ]);
 
         Payment::create($validated);
+
         return redirect()->route('payments.index')->with('success', 'Payment created.');
     }
 

@@ -19,7 +19,7 @@ class Student extends Model
         'parent_name',
         'parent_phone',
         'branch_id',
-        'status'
+        'status',
     ];
 
     public function branch()

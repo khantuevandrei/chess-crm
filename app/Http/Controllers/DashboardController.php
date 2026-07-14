@@ -29,20 +29,21 @@ class DashboardController extends Controller
         $revenueThisMonth = Payment::whereBetween('paid_at', $thisMonth)->sum('amount');
         $revenueLastMonth = Payment::whereBetween('paid_at', $lastMonth)->sum('amount');
         $revenueChange = $revenueLastMonth > 0 ? round((($revenueThisMonth - $revenueLastMonth) / $revenueLastMonth) * 100) : 0;
+
         return Inertia::render('Dashboard/Index', [
             'stats' => [
-                ['title' => 'Branches', 'value' => Branch::count(), 'change' => Branch::where('status', 'active')->count() . ' active', 'icon' => 'pi pi-building', 'color' => 'purple', 'positive' => false],
-                ['title' => 'Trainers', 'value' => Trainer::count(), 'change' => ($trainerChange >= 0 ? '+' : '') . $trainerChange . ' this month', 'icon' => 'pi pi-user', 'color' => 'blue', 'positive' => true],
-                ['title' => 'Students', 'value' => Student::count(), 'change' => ($studentChange >= 0 ? '+' : '') . $studentChange . ' this month', 'icon' => 'pi pi-users', 'color' => 'green', 'positive' => true],
+                ['title' => 'Branches', 'value' => Branch::count(), 'change' => Branch::where('status', 'active')->count().' active', 'icon' => 'pi pi-building', 'color' => 'purple', 'positive' => false],
+                ['title' => 'Trainers', 'value' => Trainer::count(), 'change' => ($trainerChange >= 0 ? '+' : '').$trainerChange.' this month', 'icon' => 'pi pi-user', 'color' => 'blue', 'positive' => true],
+                ['title' => 'Students', 'value' => Student::count(), 'change' => ($studentChange >= 0 ? '+' : '').$studentChange.' this month', 'icon' => 'pi pi-users', 'color' => 'green', 'positive' => true],
                 ['title' => 'Week Lessons', 'value' => Lesson::whereBetween('start_time', [now()->startOfWeek(), now()->endOfWeek()])->count(), 'change' => 'Lessons', 'icon' => 'pi pi-calendar', 'color' => 'orange', 'positive' => false],
                 ['title' => 'Today Lessons', 'value' => Lesson::whereDate('start_time', today())->count(), 'change' => 'Scheduled', 'icon' => 'pi pi-calendar-clock', 'color' => 'yellow', 'positive' => false],
-                ['title' => 'Revenue', 'value' => '$' . number_format($revenueThisMonth), 'change' => ($revenueChange >= 0 ? '+' : '') . $revenueChange . '%', 'icon' => 'pi pi-wallet', 'color' => 'gold', 'positive' => true],
+                ['title' => 'Revenue', 'value' => '$'.number_format($revenueThisMonth), 'change' => ($revenueChange >= 0 ? '+' : '').$revenueChange.'%', 'icon' => 'pi pi-wallet', 'color' => 'gold', 'positive' => true],
             ],
             'tournaments' => Tournament::where('start_date', '>=', today())
                 ->orderBy('start_date')
                 ->limit(4)
                 ->get()
-                ->map(fn($t) => [
+                ->map(fn ($t) => [
                     'id' => $t->id,
                     'name' => $t->name,
                     'date' => $t->start_date->format('d M Y'),
@@ -56,7 +57,7 @@ class DashboardController extends Controller
                 ->groupBy('date')
                 ->orderBy('date')
                 ->get()
-                ->map(fn($p) => [
+                ->map(fn ($p) => [
                     'date' => Carbon::parse($p->date)->format('d M'),
                     'amount' => $p->total,
                 ]),

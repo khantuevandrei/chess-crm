@@ -26,7 +26,7 @@ class TrainerController extends Controller
                 ->orderBy('last_name')->get(),
             'branches' => Branch::orderBy('name')->get(),
             'stats' => [
-                ['title' => 'Trainers', 'value' => Trainer::count(), 'change' => ($trainerChange >= 0 ? '+' : '') . $trainerChange . ' this month', 'icon' => 'pi pi-user', 'color' => 'purple', 'positive' => true],
+                ['title' => 'Trainers', 'value' => Trainer::count(), 'change' => ($trainerChange >= 0 ? '+' : '').$trainerChange.' this month', 'icon' => 'pi pi-user', 'color' => 'purple', 'positive' => true],
                 ['title' => 'Active', 'value' => Lesson::whereBetween('start_time', [now()->startOfWeek(), now()->endOfWeek()])->distinct('trainer_id')->count(), 'change' => 'Teaching this week', 'icon' => 'pi pi-calendar', 'color' => 'blue', 'positive' => false],
                 ['title' => 'Students', 'value' => Student::count(), 'change' => 'Total students', 'icon' => 'pi pi-users', 'color' => 'green', 'positive' => false],
                 ['title' => 'Average', 'value' => Trainer::has('students')->count() > 0 ? round(Student::count() / max(Trainer::has('students')->count(), 1), 1) : 'N/A', 'change' => 'Students per trainer', 'icon' => 'pi pi-chart-bar', 'color' => 'orange', 'positive' => false],
@@ -100,8 +100,8 @@ class TrainerController extends Controller
         $validated = $request->validate([
             'first_name' => 'required|string|max:20',
             'last_name' => 'required|string|max:20',
-            'email' => 'required|email|unique:trainers,email,' . $trainer->id,
-            'phone' => 'required|string|max:20|unique:trainers,phone,' . $trainer->id,
+            'email' => 'required|email|unique:trainers,email,'.$trainer->id,
+            'phone' => 'required|string|max:20|unique:trainers,phone,'.$trainer->id,
             'specialization' => 'required|string|max:20',
             'rating' => 'nullable|numeric|min:1|max:5',
             'status' => 'nullable|in:active,inactive',
