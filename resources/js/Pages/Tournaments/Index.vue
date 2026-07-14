@@ -1,110 +1,88 @@
 <script setup>
-import { useForm, router } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
+import { Link, router } from '@inertiajs/vue3'
+import { ref, computed } from 'vue'
+import { InputText, Button, Card, DataTable, Column, Tag } from 'primevue'
+import StatsGrid from '@/Components/StatsGrid.vue'
 
 const props = defineProps({
-    tournaments: Array
+    tournaments: Array,
+    stats: Array,
 })
 
-const form = useForm({
-    name: '',
-    location: '',
-    start_date: '',
-    end_date: '',
-    type: ''
+const searchQuery = ref('')
+
+const filteredTournaments = computed(() => {
+    if (!searchQuery.value) return props.tournaments
+    const q = searchQuery.value.toLowerCase()
+    return props.tournaments.filter(t => t.name.toLowerCase().includes(q) || t.location.toLowerCase().includes(q))
 })
-
-const editingId = ref(null)
-const editForm = useForm({
-    name: '',
-    location: '',
-    start_date: '',
-    end_date: '',
-    type: ''
-})
-
-function startEdit(tournament) {
-    editingId.value = tournament.id
-    editForm.name = tournament.name
-    editForm.location = tournament.location
-    editForm.start_date = tournament.start_date
-    editForm.end_date = tournament.end_date
-    editForm.type = tournament.type
-}
-
-function cancelEdit() {
-    editingId.value = null
-}
-
-function updateTournament(id) {
-    editForm.put(`/tournaments/${id}`, {
-        onSuccess: () => editingId.value = null
-    })
-}
 
 function deleteTournament(id) {
-    if (confirm('Delete tournament?')) {
+    if (confirm('Delete this tournament?')) {
         router.delete(`/tournaments/${id}`)
     }
 }
 </script>
 
 <template>
-    <h1>Tournaments</h1>
+    <AuthenticatedLayout title="Tournaments">
+        <StatsGrid :stats="stats" class="mb-4" />
 
-    <p v-if="$page.props.success" style="color:green">
-        {{ $page.props.success }}
-    </p>
+        <Card>
+            <template #content>
+                <div class="flex justify-content-between align-items-center mb-4">
+                    <InputText v-model="searchQuery" placeholder="Search tournaments..." />
+                    <Link href="/tournaments/create" class="p-button no-underline hidden md:inline-flex">
+                        <i class="pi pi-plus mr-2" /> Add Tournament
+                    </Link>
+                    <Link href="/tournaments/create" class="p-button p-button-sm no-underline md:hidden">
+                        <i class="pi pi-plus" />
+                    </Link>
+                </div>
 
-    <form @submit.prevent="form.post(`/tournaments`, {
-        onSuccess: () => form.reset()
-    })">
-        <input v-model="form.name" placeholder="Name">
-        <p v-if="form.errors.name" style="color:red">{{ form.errors.name }}</p>
-
-        <input v-model="form.location" placeholder="Location">
-        <p v-if="form.errors.location" style="color:red">{{ form.errors.location }}</p>
-
-        <input type="date" v-model="form.start_date" placeholder="Start date">
-        <p v-if="form.errors.start_date" style="color:red">{{ form.errors.start_date }}</p>
-
-        <input type="date" v-model="form.end_date" placeholder="End date">
-        <p v-if="form.errors.end_date" style="color:red">{{ form.errors.end_date }}</p>
-
-        <input v-model="form.type" placeholder="Type">
-        <p v-if="form.errors.type" style="color:red">{{ form.errors.type }}</p>
-
-        <button type="submit" :disabled="form.processing">Add</button>
-    </form>
-
-    <ul>
-        <li v-for="tournament in tournaments" :key="tournament.id">
-            <template v-if="editingId === tournament.id">
-                <input v-model="editForm.name" placeholder="Name">
-                <p v-if="editForm.errors.name" style="color:red">{{ editForm.errors.name }}</p>
-
-                <input v-model="editForm.location" placeholder="Location">
-                <p v-if="editForm.errors.location" style="color:red">{{ editForm.errors.location }}</p>
-
-                <input type="date" v-model="editForm.start_date" placeholder="Start date">
-                <p v-if="editForm.errors.start_date" style="color:red">{{ editForm.errors.start_date }}</p>
-
-                <input type="date" v-model="editForm.end_date" placeholder="End date">
-                <p v-if="editForm.errors.end_date" style="color:red">{{ editForm.errors.end_date }}</p>
-
-                <input v-model="editForm.type" placeholder="Type">
-                <p v-if="editForm.errors.type" style="color:red">{{ editForm.errors.type }}</p>
-
-                <button @click="updateTournament(tournament.id)">Update</button>
-                <button @click="cancelEdit()">Cancel</button>
+                <DataTable :value="filteredTournaments" stripedRows size="small" :paginator="true" :rows="10"
+                    responsiveLayout="scroll">
+                    <Column header="Name" sortable sortField="name">
+                        <template #body="{ data }">
+                            <Link :href="`/tournaments/${data.id}`" class="font-bold no-underline text-primary">
+                                {{ data.name }}
+                            </Link>
+                        </template>
+                    </Column>
+                    <Column header="Location" field="location" sortable />
+                    <Column header="Start Date" sortable sortField="start_date">
+                        <template #body="{ data }">
+                            {{ new Date(data.start_date).toLocaleDateString() }}
+                        </template>
+                    </Column>
+                    <Column header="End Date" sortable sortField="end_date">
+                        <template #body="{ data }">
+                            {{ new Date(data.end_date).toLocaleDateString() }}
+                        </template>
+                    </Column>
+                    <Column header="Type" field="type" sortable />
+                    <Column header="Participants" field="tournament_results_count" />
+                    <Column header="Status" sortable sortField="status">
+                        <template #body="{ data }">
+                            <Tag :value="data.status"
+                                :severity="data.status === 'active' ? 'success' : data.status === 'upcoming' ? 'info' : data.status === 'completed' ? 'secondary' : 'danger'" />
+                        </template>
+                    </Column>
+                    <Column header="Actions">
+                        <template #body="{ data }">
+                            <div class="flex gap-1">
+                                <Link :href="`/tournaments/${data.id}/edit`"
+                                    class="p-button p-button-sm p-button-secondary no-underline">
+                                    <i class="pi pi-pencil" />
+                                </Link>
+                                <Button icon="pi pi-trash" severity="danger" size="small"
+                                    @click="deleteTournament(data.id)" />
+                            </div>
+                        </template>
+                    </Column>
+                </DataTable>
             </template>
-            <template v-else>
-                {{ tournament.name }} - {{ tournament.location }} -
-                {{ tournament.start_date }} - {{ tournament.end_date }}
-                <a :href="`/tournaments/${tournament.id}`">View</a>
-                <button @click="startEdit(tournament)">Edit</button>
-                <button @click="deleteTournament(tournament.id)">Delete</button>
-            </template>
-        </li>
-    </ul>
+        </Card>
+    </AuthenticatedLayout>
 </template>

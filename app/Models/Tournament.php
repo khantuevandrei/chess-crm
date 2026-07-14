@@ -12,6 +12,7 @@ class Tournament extends Model
         'start_date',
         'end_date',
         'type',
+        'status'
     ];
 
     protected function casts(): array
