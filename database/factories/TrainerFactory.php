@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\Trainer;
 use App\Models\Branch;
+use App\Models\Trainer;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

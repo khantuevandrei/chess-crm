@@ -2,14 +2,15 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use App\Models\User;
 use App\Models\Branch;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class BranchTest extends TestCase
 {
     use RefreshDatabase;
+
     /**
      * A basic feature test example.
      */
