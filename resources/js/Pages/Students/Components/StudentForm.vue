@@ -1,5 +1,5 @@
 <script setup>
-import { useForm, Link } from '@inertiajs/vue3'
+import { useForm } from '@inertiajs/vue3'
 import { InputText, Button, Card } from 'primevue'
 
 const props = defineProps({
@@ -30,6 +30,10 @@ function submit() {
     } else {
         form.post('/students')
     }
+}
+
+function goBack() {
+    window.history.back()
 }
 </script>
 
@@ -133,7 +137,7 @@ function submit() {
 
         <!-- Action Buttons -->
         <div class="flex justify-content-between">
-            <Link :href="`/students/${student.id}`" class="p-button p-button-secondary no-underline">Cancel</Link>
+            <button type="button" @click="goBack" class="p-button p-button-secondary no-underline">← Back</button>
             <Button type="submit" :disabled="form.processing">
                 {{ isEdit ? 'Save Changes' : 'Create Student' }}
             </Button>

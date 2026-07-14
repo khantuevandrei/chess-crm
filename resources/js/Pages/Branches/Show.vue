@@ -33,8 +33,6 @@ function deleteBranch(id) {
             </div>
             <div class="flex gap-2">
                 <Link href="/branches" class="p-button p-button-secondary no-underline">Back</Link>
-                <Link :href="`/branches/${branch.id}/edit`" class="p-button p-button-secondary no-underline">Edit
-                </Link>
             </div>
 
         </div>

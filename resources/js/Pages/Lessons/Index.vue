@@ -81,7 +81,6 @@ function deleteLesson(id) {
                                 :severity="data.status === 'completed' ? 'success' : data.status === 'cancelled' ? 'danger' : 'warning'" />
                         </template>
                     </Column>
-                    <Column header="Students" field="students_count" />
                     <Column header="Actions">
                         <template #body="{ data }">
                             <div class="flex gap-1">

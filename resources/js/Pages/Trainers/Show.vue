@@ -31,8 +31,6 @@ function deleteTrainer(id) {
             </div>
             <div class="flex gap-2">
                 <Link href="/trainers" class="p-button p-button-secondary no-underline">Back</Link>
-                <Link :href="`/trainers/${trainer.id}/edit`" class="p-button p-button-secondary no-underline">Edit
-                </Link>
             </div>
         </div>
 

@@ -1,5 +1,5 @@
 <script setup>
-import { useForm, Link } from '@inertiajs/vue3';
+import { useForm } from '@inertiajs/vue3';
 import { InputText, Button, Card } from 'primevue';
 
 const props = defineProps({
@@ -32,6 +32,10 @@ function submit() {
     } else {
         form.post('/branches')
     }
+}
+
+function goBack() {
+    window.history.back()
 }
 </script>
 
@@ -138,7 +142,7 @@ function submit() {
 
         <!-- Actions -->
         <div class="flex justify-content-between">
-            <Link :href="`/branches/${branch.id}`" class="p-button p-button-secondary no-underline">Cancel</Link>
+            <button type="button" @click="goBack" class="p-button p-button-secondary no-underline">← Back</button>
             <Button type="submit" :disabled="form.processing">{{ isEdit ? 'Save Changes' : 'Create Branch' }}</Button>
         </div>
     </form>

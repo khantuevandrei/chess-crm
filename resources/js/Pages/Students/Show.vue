@@ -30,8 +30,6 @@ function deleteStudent(id) {
             </div>
             <div class="flex gap-2">
                 <Link href="/students" class="p-button p-button-secondary no-underline">Back</Link>
-                <Link :href="`/students/${student.id}/edit`" class="p-button p-button-secondary no-underline">Edit
-                </Link>
             </div>
         </div>
 
