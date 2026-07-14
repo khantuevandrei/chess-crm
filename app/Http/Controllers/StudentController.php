@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Branch;
+use App\Models\Payment;
 use App\Models\Student;
 use App\Models\Trainer;
-use App\Models\Payment;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -29,12 +29,12 @@ class StudentController extends Controller
             'branches' => Branch::orderBy('name')->get(),
             'trainers' => Trainer::orderBy('last_name')->get(),
             'stats' => [
-                ['title' => 'Total Students', 'value' => Student::count(), 'change' => ($studentChange >= 0 ? '+' : '') . $studentChange . ' this month', 'icon' => 'pi pi-users', 'color' => 'purple', 'positive' => true],
-                ['title' => 'Active', 'value' => Student::where('status', 'active')->count(), 'change' => round((Student::where('status', 'active')->count() / max(Student::count(), 1)) * 100) . '% of total', 'icon' => 'pi pi-check-circle', 'color' => 'green', 'positive' => false],
-                ['title' => 'New This Month', 'value' => $studentsThisMonth, 'change' => '+' . Student::whereMonth('created_at', now()->subMonth()->month)->count() . ' last month', 'icon' => 'pi pi-plus-circle', 'color' => 'blue', 'positive' => true],
+                ['title' => 'Total Students', 'value' => Student::count(), 'change' => ($studentChange >= 0 ? '+' : '').$studentChange.' this month', 'icon' => 'pi pi-users', 'color' => 'purple', 'positive' => true],
+                ['title' => 'Active', 'value' => Student::where('status', 'active')->count(), 'change' => round((Student::where('status', 'active')->count() / max(Student::count(), 1)) * 100).'% of total', 'icon' => 'pi pi-check-circle', 'color' => 'green', 'positive' => false],
+                ['title' => 'New This Month', 'value' => $studentsThisMonth, 'change' => '+'.Student::whereMonth('created_at', now()->subMonth()->month)->count().' last month', 'icon' => 'pi pi-plus-circle', 'color' => 'blue', 'positive' => true],
                 ['title' => 'Active Groups', 'value' => 'N/A', 'change' => 'Groups feature coming soon', 'icon' => 'pi pi-users', 'color' => 'orange', 'positive' => false],
-                ['title' => 'Average Check', 'value' => '$' . number_format($averageCheck, 2), 'change' => 'Per student this month', 'icon' => 'pi pi-wallet', 'color' => 'gold', 'positive' => false],
-                ['title' => 'Paid This Month', 'value' => '$' . number_format($paidThisMonth), 'change' => ($paidChange >= 0 ? '+' : '') . $paidChange . '% vs last month', 'icon' => 'pi pi-wallet', 'color' => 'gold', 'positive' => true],
+                ['title' => 'Average Check', 'value' => '$'.number_format($averageCheck, 2), 'change' => 'Per student this month', 'icon' => 'pi pi-wallet', 'color' => 'gold', 'positive' => false],
+                ['title' => 'Paid This Month', 'value' => '$'.number_format($paidThisMonth), 'change' => ($paidChange >= 0 ? '+' : '').$paidChange.'% vs last month', 'icon' => 'pi pi-wallet', 'color' => 'gold', 'positive' => true],
             ],
         ]);
     }

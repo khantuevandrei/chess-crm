@@ -70,7 +70,7 @@ function deleteStudent(id) {
                             {{ data.trainers?.[0]?.last_name + ' ' + data.trainers?.[0]?.first_name || 'N/A' }}
                         </template>
                     </Column>
-                    <Column header="Fide Rating" field="fide_rating" sortable />
+                    <Column header="FIDE Rating" field="fide_rating" sortable />
                     <Column header="Status" sortable sort-field="status">
                         <template #body="{ data }">
                             <Tag :value="data.status" :severity="data.status === 'active' ? 'success' : 'secondary'" />

@@ -36,7 +36,7 @@ class Student extends Model
             ->withTimestamps();
     }
 
-    public function pyaments()
+    public function payments()
     {
         return $this->hasMany(Payment::class);
     }

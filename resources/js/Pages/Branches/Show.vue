@@ -32,6 +32,7 @@ function deleteBranch(id) {
                 <p class="text-gray-500 mt-2" v-if="branch.description">{{ branch.description }}</p>
             </div>
             <div class="flex gap-2">
+                <Link href="/branches" class="p-button p-button-secondary no-underline">Back</Link>
                 <Link :href="`/branches/${branch.id}/edit`" class="p-button p-button-secondary no-underline">Edit
                 </Link>
             </div>
